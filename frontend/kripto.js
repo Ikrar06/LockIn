@@ -80,7 +80,7 @@ async function enkripsi(kunciEnkripsi, dataPolos) {
 }
 
 /**
- * Mendekripsi data menggunakan Kunci Enkripsi.
+ * Mendekripsi data menggunakan Kunci Enkripsi
  * @param {ArrayBuffer} kunciEnkripsi
  * @param {{ciphertext: ArrayBuffer, iv: Uint8Array}} dataTerenkripsi
  * @returns {Promise<string|null>}
