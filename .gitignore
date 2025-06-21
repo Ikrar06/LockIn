@@ -4,3 +4,15 @@ __pycache__/
 
 # VS Code
 .vscode/
+
+# Folder dependensi Node.js
+/backend/node_modules/
+
+# File kunci rahasia Firebase
+backend/firebase-secret-key.json
+
+# File-file lain yang perlu diabaikan
+.vscode/
+__pycache__/
+*.pyc
+.DS_Store
