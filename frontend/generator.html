@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator - Brankas Aman</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="generator.css">
+</head>
+<body>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+    <nav class="sidebar">
+        <div class="sidebar-content-atas">
+            <div class="logo-area">
+                <div class="logo-box"></div>
+                <h3>Lock<span class="text-biru">In</span></h3>
+            </div>
+
+            <div class="greeting-area">
+                <h2>HI, <span id="nama-pengguna-sapaan"></span></h2>
+            </div>
+
+            <ul class="menu-list">
+                <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> dashboard</a></li>
+                <li><a href="bank.html"><i class="fas fa-key"></i> password bank</a></li>
+                <li><a href="generator.html" class="active"><i class="fas fa-dice-d6"></i> password generator</a></li>
+                <li><a href="support.html"><i class="fas fa-question-circle"></i> support</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-content-bawah">
+            <div class="logout-area">
+                 <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            <div class="profile-area">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <span class="user-name">user</span>
+                    <span class="user-email" id="user-email-display">memuat...</span>
+                </div>
+            </div>
+        </div>
+
+    </nav>
+        <main class="content">
+            <header class="content-header">
+                <h1>Password Generator</h1>
+                <p>Buat password yang kuat dan unik di sini.</p>
+            </header>
+
+            <div class="generator-container widget-container">
+            <div class="result-container widget" style="grid-column: span 2;">
+                <input type="text" id="password-display" value="Klik 'Generate' untuk memulai" readonly>
+                <button id="copyBtn" title="Salin Password"><i class="fas fa-copy"></i></button>
+            </div>
+
+            <div class="options-container widget-grid">
+                <div class="widget option length-option">
+                    <label for="length-slider">Panjang Karakter</label>
+                    <div class="slider-wrapper length-slider">
+                        <input type="range" id="length-slider" min="8" max="32" value="16">
+                        <span id="length-value">16</span>
+                    </div>
+                </div>
+                <div class="widget option">
+                    <label for="uppercase">Sertakan Huruf Besar (A-Z)</label>
+                    <input type="checkbox" id="uppercase" class="toggle" checked>
+                </div>
+                <div class="widget option">
+                    <label for="lowercase">Sertakan Huruf Kecil (a-z)</label>
+                    <input type="checkbox" id="lowercase" class="toggle" checked>
+                </div>
+                <div class="widget option">
+                    <label for="numbers">Sertakan Angka (0-9)</label>
+                    <input type="checkbox" id="numbers" class="toggle" checked>
+                </div>
+                <div class="widget option">
+                    <label for="symbols">Sertakan Simbol (#?!...)</label>
+                    <input type="checkbox" id="symbols" class="toggle">
+                </div>
+            </div>
+            
+            <button id="generateBtn" class="generate-button">
+                <i class="fas fa-dice-d6"></i> Generate Password
+            </button>
+        </div>
+        </main>
+    </div>
+    
+    <script src="menu.js"></script> 
+    <script src="generator.js"></script>
+</body>
+</html>

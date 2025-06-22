@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* { 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #161616;
+    height: 100vh;
+    width: 100vw;
+    display: flex; 
+    color: #fff;
+    overflow: hidden;
+    padding: 20px; 
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    z-index: -1;
+}
+.shape1 { width: 600px; height: 600px; background: #256EDB; top: -30%; left: -15%; }
+.shape2 { width: 1000px; height: 1000px; background: #256EDB; bottom: -35%; right: -20%; }
+
+.content {
+    flex-grow: 1; /* Mengisi sisa ruang */
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.widget-container {
+    flex-grow: 1;
+    background: rgba(30, 30, 46, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 25px;
+}
+
+.action-btn {
+    background-color: #2979ff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.action-btn:hover {
+    background-color: #0D69E1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(41, 121, 255, 0.3);
+}
+
+.list-container {
+    padding: 10px;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.list-header, .list-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1.5fr 1fr 1fr;
+    gap: 15px;
+    padding: 15px 20px;
+    align-items: center;
+}
+
+.list-header {
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.aksi-header { text-align: center; }
+
+.list-row {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+
+.password-text { font-family: 'Courier New', Courier, monospace; letter-spacing: 2px; }
+.action-buttons {
+    text-align: center;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+.action-buttons button {
+    background: none; border: none; color: #8B949E;
+    cursor: pointer; font-size: 16px;
+    transition: color 0.2s ease;
+}
+.action-buttons button:hover { color: #2979ff; }
+.delete-btn:hover { color: #e74c60; }
+.list-row-info { padding: 20px; text-align: center; color: #8B949E; }
+.list-row-info.error { color: #e74c60; }
+
+
+/* --- Gaya untuk Modal --- */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: none; /* Diubah menjadi 'flex' oleh JS */
+    justify-content: center; align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.modal.show { display: flex; opacity: 1; }
+
+.modal-content {
+    background: rgba(30, 30, 46, 0.4);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 40px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+.modal.show .modal-content { transform: scale(1); }
+
+.modal-content h2 { margin-top: 0; margin-bottom: 30px; }
+.modal-content .input-group { margin-bottom: 20px; }
+.modal-content label { display: block; margin-bottom: 8px; color: #b3b3b3; }
+.modal-content input, .modal-content textarea {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+}
+.modal-content textarea { resize: vertical; }
+
+.modal-buttons { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
+.modal-buttons button { padding: 10px 25px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+.btn-primary { background-color: #2979ff; color: #fff; }
+.btn-secondary { background-color: rgba(255, 255, 255, 0.1); color: #fff; }
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.close-btn { background: none; border: none; color: #8B949E; font-size: 2.5rem; cursor: pointer; line-height: 1; padding: 0; }
+
+.detail-body { display: flex; flex-direction: column; gap: 15px; }
+.detail-group { display: flex; flex-direction: column; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); width: 100%;}
+.detail-group label { color: #8B949E; font-size: 12px; margin-bottom: 5px; }
+.detail-group span, .detail-group p { font-weight: 500; font-size: 16px; }
+.password-viewer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+.password-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+#detailNote { background: rgba(255, 255, 255, 0.05);; padding: 10px; border-radius: 6px; white-space: pre-wrap; word-break: break-word; width: 100%; }
+.icon-btn { background: none; border: none; color: #b3b3b3; font-size: 18px; cursor: pointer; margin-left: 10px; }

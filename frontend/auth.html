@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Selamat Datang - Brankas Aman</title>
+    <link rel="stylesheet" href="auth.css"/> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+</head>
+<body>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+
+    <div class="container mode-signup" id="container">
+        
+        <div class="highlight-box"></div>
+
+        <div class="box left-box">
+            <form class="form signup-form" id="signup-form">
+                <h2>SignUp</h2>
+                <div class="input-group">
+                    <label>Username</label>
+                    <div class="input-field"><img src="user.png" class="custom-icon" alt="User Icon" /><input type="text" id="signup-username" placeholder="Enter your username"required /></div>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <div class="input-field"><img src="mail.png" class="custom-icon" alt="Mail Icon" /><input type="email" id="signup-email" placeholder="Enter your email address" required /></div>
+                </div>
+                <div class="input-group">
+                    <label>Master Password</label>
+                    <div class="input-field"><img src="lock.png" class="custom-icon" alt="Lock Icon" /><input type="password" id="signup-password" placeholder="Create a strong master password" required /></div>
+                </div>
+                <div class="input-group">
+                    <label>Confirm Master Password</label>
+                    <div class="input-field"><img src="lock.png" class="custom-icon" alt="Lock Icon" /><input type="password" id="signup-password-confirm" placeholder="Re-enter your master password" required /></div>
+                </div>
+                <div class="pesan" id="signup-pesan"></div>
+                <button type="submit" class="btn">Daftar</button>
+            </form>
+
+            <div class="panel signup-panel">
+                <h3>Don't have account?</h3>
+                <p3>Enter your details and start journey with us</p3>
+                <button class="btn ghost3" id="switchToSignup">Signup</button>
+            </div>
+        </div>
+
+        <div class="box right-box">
+            <form class="form login-form" id="login-form">
+            <h2>Login</h2>
+            <div class="input-group">
+                <label>Email</label>
+                <div class="input-field">
+                    <img src="mail.png" class="custom-icon" alt="Mail Icon" />
+                    <input type="email" id="login-email" placeholder="Enter your email address" required />
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Master Password</label>
+                <div class="input-field">
+                    <img src="lock.png" class="custom-icon" alt="Lock Icon" />
+                    <input type="password" id="login-password" placeholder="Enter your master password" required />
+                </div>
+            </div>
+            <div class="pesan" id="login-pesan"></div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+            <div class="panel login-panel">
+                <h1>Already have account?</h1>
+                <p1>Login with your existing account to stay connected</p1>
+                <button class="btn ghost1" id="switchToLogin">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="kripto.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
