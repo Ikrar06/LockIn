@@ -1,18 +1,35 @@
-# Python
-venv/
-__pycache__/
+# =======================================================
+# BAGIAN BACKEND (Node.js / Express.js)
+# =======================================================
 
-# VS Code
-.vscode/
-
-# Folder dependensi Node.js
+# Abaikan seluruh folder dependensi Node.js di backend. Ini yang paling penting!
 /backend/node_modules/
 
-# File kunci rahasia Firebase
-backend/firebase-secret-key.json
+# Abaikan file kunci rahasia Firebase. Ini SANGAT PENTING untuk keamanan.
+/backend/firebase-secret-key.json
 
-# File-file lain yang perlu diabaikan
+# Abaikan file environment, yang biasanya berisi kunci rahasia lain.
+.env
+*.env
+
+# Abaikan file log yang mungkin dibuat oleh Node.js atau pustaka lain.
+*.log
+npm-debug.log*
+
+
+# =======================================================
+# BAGIAN FRONTEND
+# =======================================================
+
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+
+# Abaikan file konfigurasi VS Code
 .vscode/
-__pycache__/
-*.pyc
+
+# Abaikan file sistem operasi macOS
 .DS_Store
+
+# Abaikan file thumbnail sistem operasi Windows
+Thumbs.db
