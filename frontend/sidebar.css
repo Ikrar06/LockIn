@@ -1,0 +1,201 @@
+/* --- SIDEBAR (KOLOM KIRI) --- */
+.sidebar {
+    width: 380px;
+    flex-shrink: 0;
+    background: rgba(30, 30, 46, 0.4);
+    padding: 30px 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+.logo-box {
+    width: 40px;
+    height: 40px;
+    background-color: #0D69E1;
+    border-radius: 10px;
+}
+.logo-area h3 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+}
+.logo-area .text-biru {
+    color: #2979ff;
+}
+
+.greeting-area h2 {
+    font-size: 2.5em;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 50px;
+    margin-left: -25px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-list a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 25px;
+    color: #8B949E;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+
+    border-left: 5px solid transparent;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.menu-list a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    margin-left: 25px;
+    transform: scale(1.02);
+}
+
+.menu-list a:hover i {
+    transform: scale(1.1);
+}
+
+.menu-list a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.menu-list a.active {
+    color: #ffffff;
+    font-weight: 600;
+    margin-left: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left-color: #2979ff;
+    z-index: 2;
+    transform: scale(1.2);
+}
+
+.menu-list a.active ~ a {
+    animation: bounceDown 0.4s ease forwards;
+}
+
+.menu-list a.active + a {
+    animation: bounceUp 0.4s ease forwards;
+}
+
+@keyframes bounceUp {
+    0% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    60% { transform: translateY(4px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes bounceDown {
+    0% { transform: translateY(0); }
+    30% { transform: translateY(8px); }
+    60% { transform: translateY(-4px); }
+    100% { transform: translateY(0); }
+}
+
+.menu-list a::before {
+    content: '';
+    position: absolute;
+    left: -60px;
+    top: -50%;
+    width: 120px;
+    height: 200%;
+    background: radial-gradient(circle, rgba(41, 121, 255, 0.5) 0%, transparent 70%);
+    filter: blur(35px);
+    z-index: -1;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.menu-list a.active::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.sidebar-content-bawah {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.logout-area a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    text-decoration: none;
+    color: #8B949E;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.logout-area a:hover {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.profile-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #C4C4C4;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.user-info .user-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.user-info .user-email {
+    font-size: 12px;
+    color: #8B949E;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

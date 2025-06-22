@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Brankas Aman</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-content-atas">
+            <div class="logo-area">
+                <div class="logo-box"></div>
+                <h3>Lock<span class="text-biru">In</span></h3>
+            </div>
+
+            <div class="greeting-area">
+                <h2>HI, <span id="nama-pengguna-sapaan"></span></h2>
+            </div>
+
+            <ul class="menu-list">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-chart-pie"></i> dashboard</a></li>
+                <li><a href="bank.html"><i class="fas fa-key"></i> password bank</a></li>
+                <li><a href="generator.html"><i class="fas fa-dice-d6"></i> password generator</a></li>
+                <li><a href="support.html"><i class="fas fa-question-circle"></i> support</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-content-bawah">
+            <div class="logout-area">
+                 <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            <div class="profile-area">
+                <div class="user-avatar"></div>
+                <div class="user-info">
+                    <span class="user-name">user</span>
+                    <span class="user-email" id="user-email-display">memuat...</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content">
+    <header class="content-header">
+      <h1>Dashboard</h1>
+    </header>
+
+    <div class="widget-container">
+      <section class="widget-grid">
+
+        <!-- Widget: Gauge Skor -->
+        <article class="widget glass gauge-widget">
+          <h4><i class="fas fa-shield-alt"></i> Skor Keamanan</h4>
+          <div class="gauge-container">
+            <canvas id="gaugeChart"></canvas>
+            <div class="gauge-score" id="skor-nilai">0</div>
+          </div>
+          <p id="skor-pesan">Menganalisis data brankas Anda...</p>
+        </article>
+
+        <article class="widget glass safe-widget">
+          <h4><i class="fas fa-lock"></i> Password Kuat</h4>
+          <p><strong id="stat-kuat">0</strong> sandi dinilai kuat dan aman.</p>
+        </article>
+
+        <article class="widget glass danger-widget">
+          <h4><i class="fas fa-unlock"></i> Password Lemah</h4>
+          <p><strong id="stat-lemah">0</strong> sandi sangat rentan. Gunakan generator untuk menggantinya.</p>
+        </article>
+
+        <article class="widget glass warning-widget">
+          <h4><i class="fas fa-copy"></i> Password Berulang</h4>
+          <p><strong id="stat-berulang">0</strong> sandi digunakan lebih dari sekali. Sebaiknya gunakan variasi unik.</p>
+        </article>
+
+        <article class="widget glass chart-widget">
+          <h4><i class="fas fa-chart-doughnut"></i> Komposisi Sandi</h4>
+          <div class="chart-container">
+            <canvas id="grafik-komposisi"></canvas>
+          </div>
+        </article>
+
+        <article class="widget glass stats-widget">
+          <h4><i class="fas fa-hashtag"></i> Statistik Ringkasan</h4>
+          <ul>
+            <li><span>Total Sandi</span><strong id="stats-total">0</strong></li>
+            <li><span>Entri Terlemah</span><strong id="stats-terlemah">-</strong></li>
+          </ul>
+        </article>
+
+      </section>
+    </div>
+  </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+    <script src="kripto.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="menu.js"></script> 
+</body>
+</html>

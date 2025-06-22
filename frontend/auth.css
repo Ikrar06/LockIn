@@ -1,0 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #161616;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    overflow: hidden;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    z-index: -1;
+}
+.shape1 { width: 600px; height: 600px; background: #256EDB; top: -30%; left: -15%; }
+.shape2 { width: 1000px; height: 1000px; background: #256EDB; bottom: -35%; right: -20%; }
+
+/* === KONTENER UTAMA === */
+.container {
+    width: 1400px;
+    height: 800px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    
+    background: rgba(30, 30, 46, 0.4); 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* === KOTAK HIGHLIGHT === */
+.highlight-box {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 1;
+    transition: left 0.8s cubic-bezier(0.6, -1.9, 0.27, 1.55); 
+    
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Mengatur posisi highlight-box berdasarkan mode */
+.container.mode-signup .highlight-box { left: 0; }
+.container.mode-login .highlight-box { left: 50%; }
+
+/* === KONTEN KIRI & KANAN === */
+.box {
+    width: 50%;
+    height: 100%;
+    position: relative; 
+    padding: 50px;
+    z-index: 2; 
+}
+
+.form, .panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+}
+
+/* === PENGATURAN MODE (LOGIKA UTAMA CSS) === */
+
+/* Mode Signup (Default) */
+.container.mode-signup .signup-form   { opacity: 1; transform: translateX(0); pointer-events: all; }
+.container.mode-signup .signup-panel  { opacity: 0; transform: translateX(20px); pointer-events: none; }
+.container.mode-signup .login-form    { opacity: 0; transform: translateX(20px); pointer-events: none; }
+.container.mode-signup .login-panel   { opacity: 1; transform: translateX(0); pointer-events: all; }
+
+/* Mode Login (Saat class ditukar oleh JS) */
+.container.mode-login .signup-form   { opacity: 0; transform: translateX(-20px); pointer-events: none; }
+.container.mode-login .signup-panel  { opacity: 1; transform: translateX(0); pointer-events: all; }
+.container.mode-login .login-form    { opacity: 1; transform: translateX(0); pointer-events: all; }
+.container.mode-login .login-panel   { opacity: 0; transform: translateX(-20px); pointer-events: none; }
+
+
+h2 {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-align: left;
+    font-size: 36px;
+}
+h1 {
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: right;
+    margin-top: 450px;
+    font-size: 36px;
+}
+h3 {
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: left;
+    margin-top: 220px;
+    font-size: 36px;
+}
+.panel p1 {
+    font-size: 14px;
+    text-align: right;
+    margin-bottom: 20px;
+}
+.panel p3 {
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+.custom-icon {
+  width: 25px;
+  height: 25px;
+  margin-left: 10px;
+  object-fit: contain;
+  filter: brightness(0.8); 
+  transition: filter 0.3s;
+}
+.input-field:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  filter: brightness(1.5);
+}
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.input-group label {
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: block;
+}
+.input-field {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.input-field i {
+    color: #aaa;
+    margin-right: 10px;
+}
+.input-field input {
+    background: transparent;
+    border: none;
+    outline: none;
+    margin-left: 20px;
+    color: #fff;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-wrapper label {
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #ccc;
+}
+.checkbox-wrapper label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 18px;
+  height: 18px;
+  background-color: #aaa; 
+  border-radius: 4px;
+}
+
+.checkbox-wrapper input[type="checkbox"]:checked + label::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  background-color: #666; 
+  border-radius: 2px;
+}
+.btn {
+    background-color: #256EDB;
+    color: white;
+    margin-top: 20px;
+    border: none;
+    padding: 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    max-width: 300px; 
+}
+.btn.ghost1 {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid #fff;
+    align-items: right;
+}
+.btn.ghost3 {
+    margin-left: 0px;
+    background: transparent;
+    border: 1px solid #fff;
+    align-items: right;
+}
+.btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    filter: brightness(1.2);
+}

@@ -1,0 +1,251 @@
+/* generator.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* { 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #161616;
+    height: 100vh;
+    width: 100vw;
+    display: flex; 
+    color: #fff;
+    overflow: hidden;
+    padding: 20px; 
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    z-index: -1;
+}
+.shape1 { width: 600px; height: 600px; background: #256EDB; top: -30%; left: -15%; }
+.shape2 { width: 1000px; height: 1000px; background: #256EDB; bottom: -35%; right: -20%; }
+
+.content {
+    flex-grow: 1;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.widget-container {
+    flex-grow: 1;
+    background: rgba(30, 30, 46, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.content-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.generator-container {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Area Tampilan Password */
+.result-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--darker-bg);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#password-display {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: monospace;
+    font-size: 1.5em;
+    font-weight: 600;
+    padding: 10px;
+}
+
+#copyBtn {
+    background: var(--primary-color);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#copyBtn:hover {
+    background: #0D69E1;
+}
+
+/* Area Opsi */
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.option {
+    background: var(--darker-bg);
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option label {
+    font-weight: 500;
+}
+
+/* Slider Panjang Password */
+.length-slider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#length-value {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--primary-color);
+    width: 40px;
+    text-align: center;
+}
+
+#length-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: linear-gradient(to right, #256EDB, #1F4E79);
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+}
+
+#length-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #256EDB;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+#length-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+#length-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #256EDB;
+    cursor: pointer;
+}
+
+/* Toggle Switch untuk Opsi */
+.toggle {
+    appearance: none;
+    position: relative;
+    width: 55px;
+    height: 30px;
+    background: #444;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 2px solid #666;
+}
+.toggle::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 50%;
+    left: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+}
+
+.toggle:checked {
+    background: linear-gradient(145deg, #256EDB, #1F4E79);
+    border-color: #256EDB;
+}
+
+.toggle:checked::before {
+    transform: translate(22px, -50%);
+}
+
+/* Responsive fix jika perlu */
+@media (max-width: 600px) {
+    .widget-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tombol Generate Utama */
+.generate-button {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.generate-button:hover {
+    background: #0D69E1;
+}
+.generate-button i {
+    margin-right: 10px;
+}
+#password-display {
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: thin;
+}
+
+/* Grid baru untuk opsi */
+.widget-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* Kotak widget untuk opsi */
+.widget {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px;
+}
+
+.result-container.widget {
+    grid-column: span 2;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 20px;
+}
