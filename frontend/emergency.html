@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Data Wipe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet" href="emergency.css">
+</head>
+<body>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+
+    <div class="container">
+        <img src="fire.png" class="custom-icon-wipe" alt="Wipe Icon" />
+        <h1>Remote Data Wipe</h1>
+        <p>Use this page ONLY if you are absolutely sure you want to permanently delete all data in your vault. This action cannot be undone.</p>
+        
+        <form id="wipe-form">
+            <input type="email" id="email" placeholder="Enter your account email" required>
+            <input type="password" id="destruction-code" placeholder="Enter your Destruction Code" required>
+            <button type="submit">WIPE MY DATA NOW</button>
+        </form>
+        
+        <div id="pesan" class="message-area"></div>
+        <a href="auth.html" class="back-link">Back to Login</a>
+    </div>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirmation-modal">
+            <div class="modal-header">
+                <h2 id="confirmTitle"></h2>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" id="confirm-no-btn" class="btn-secondary">Cancel</button>
+                <button type="button" id="confirm-yes-btn" class="btn-danger">Yes, I'm Sure</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="main-layout.js"></script>
+    <script src="emergency.js"></script>
+</body>
+</html>
