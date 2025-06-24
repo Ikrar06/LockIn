@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const { kunciVerifikasi } = await turunkanKunci(password, salt);
                 const verificationKeyBase64 = bufferToBase64(kunciVerifikasi);
 
-                const response = await fetch('http://localhost:5000/register', {
+                const response = await fetch(`${window.config.API_URL}/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Step 1: Get salt from server
-                const saltResponse = await fetch(`http://localhost:5000/getsalt/${email}`);
+                const saltResponse = await fetch(`${window.config.API_URL}/getsalt/${email}`);
                 if (!saltResponse.ok) throw new Error('Incorrect email or Master Password.');
                 const { salt } = await saltResponse.json();
                 const saltBuffer = new Uint8Array(salt);
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const verificationKeyBase64 = bufferToBase64(kunciVerifikasi);
 
                 // Step 3: Verify login
-                const loginResponse = await fetch('http://localhost:5000/login', {
+                const loginResponse = await fetch(`${window.config.API_URL}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, verificationKey: verificationKeyBase64 })

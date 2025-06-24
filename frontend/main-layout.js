@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/profile/${userEmail}`);
+            const response = await fetch(`${window.config.API_URL}/profile/${userEmail}`);
             if (!response.ok) throw new Error("Session invalid.");
 
             const profileData = await response.json();
