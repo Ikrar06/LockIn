@@ -17,6 +17,64 @@ body {
     overflow: hidden;
 }
 
+:root {
+    /* Variabel untuk posisi mouse (dikontrol oleh JS) */
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+
+    /* Variabel untuk warna grid */
+    --grid-size: 40px;
+    --grid-color-dim: rgba(255, 255, 255, 0.015); /* Warna grid redup */
+    --grid-color-bright: rgba(41, 121, 255, 0.3); /* Warna grid terang (biru) */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0D1117;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px;
+    position: relative; /* Penting untuk pseudo-element */
+
+    /* LAPIS BAWAH: Grid yang redup */
+    background-image:
+        linear-gradient(var(--grid-color-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-dim) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+}
+
+/* LAPIS ATAS: Grid terang yang akan kita "ungkap" dengan topeng */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Pola grid yang sama persis, tapi dengan warna terang */
+    background-image:
+        linear-gradient(var(--grid-color-bright) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-bright) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+
+    /* INI DIA KUNCINYA: MASKER/TOPENG AJAIB */
+    mask-image: radial-gradient(
+        circle 200px at var(--mouse-x) var(--mouse-y),
+        #fff 0%, /* Area yang terlihat */
+        transparent 100% /* Area yang tersembunyi */
+    );
+    -webkit-mask-image: radial-gradient(
+        circle 200px at var(--mouse-x) var(--mouse-y),
+        #fff 0%,
+        transparent 100%
+    );
+
+    z-index: -1; /* Posisikan di belakang konten */
+}
 .shape {
     position: absolute;
     border-radius: 50%;
@@ -35,10 +93,8 @@ body {
     overflow: hidden;
     
     background: rgba(30, 30, 46, 0.4); 
-    backdrop-filter: blur(12px); 
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1); 
+    border-radius: 20px;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -118,7 +174,7 @@ h3 {
     margin-bottom: 20px;
     font-weight: 600;
     text-align: left;
-    margin-top: 220px;
+    margin-top: 450px;
     font-size: 36px;
 }
 .panel p1 {
@@ -228,6 +284,19 @@ h3 {
     width: 100%;
     max-width: 300px; 
 }
+.btnSL {
+    background-color: #256EDB;
+    color: white;
+    margin-top: 20px;
+    border: none;
+    padding: 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    max-width: 300px; 
+}
 .btn.ghost1 {
     margin-left: auto;
     background: transparent;
@@ -240,9 +309,357 @@ h3 {
     border: 1px solid #fff;
     align-items: right;
 }
+.btnSL:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 0px 10px rgba(41, 121, 255, 0.3);
+    filter: brightness(1.2);
+}
 .btn:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     filter: brightness(1.2);
+}
+
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: none; /* Diubah menjadi 'flex' oleh JS */
+    justify-content: center; align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background: rgba(22, 27, 34, 0.5); 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(20px);
+  border-radius: 15px;
+  padding: 30px 40px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+.modal.show .modal-content {
+    transform: scale(1);
+}
+.modal-content h2 {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+.modal-content h2 i { color: #ffffff; }
+
+.modal-body p {
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.confirm-checkbox-wrapper {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 0.95rem;
+  color: #ccc;
+  font-family: 'Poppins', sans-serif;
+}
+
+.confirm-checkbox-wrapper input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #256EDB;
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  transition: all 0.2s ease-in-out;
+}
+
+.confirm-checkbox-wrapper input[type="checkbox"]:checked {
+  background-color: #256EDB;
+  border-color: #256EDB;
+}
+
+.confirm-checkbox-wrapper input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -60%) rotate(45deg);
+}
+.modal-buttons { 
+    display: flex; 
+    justify-content: center; 
+    gap: 15px; 
+    margin-top: 10px; /* Kurangi sedikit jarak atas */
+}
+.modal-buttons button {
+    padding: 12px 25px; /* Sedikit padding yang lebih seimbang */
+    border-radius: 8px; 
+    border: none; 
+    cursor: pointer; 
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+}
+.modal-buttons .btn-primary {
+    background-color: #256EDB;
+    color: white;
+}
+.modal-buttons .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0px 10px rgba(41, 121, 255, 0.3);
+    transition: all 0.3s ease;
+    background-color: #0f5ed4;
+}
+.modal-buttons .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1); 
+    color: #fff; 
+}
+.modal-buttons .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0px 10px rgba(92, 92, 92, 0.3);
+    transition: all 0.3s ease;
+    background-color: rgba(155, 155, 155, 0.1); 
+}
+.modal-buttons button.disabled {
+    background-color: #555;
+    color: #999;
+    cursor: not-allowed;
+}
+.modal-buttons button.disabled:hover {
+    transform: none; /* Hilangkan efek hover saat disabled */
+}
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+/* ================================== */
+/* GAYA UNTUK NOTIFIKASI POP-UP KUSTOM */
+/* ================================== */
+
+.notifikasi-popup {
+    position: fixed; /* Tetap di layar bahkan saat di-scroll */
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2ecc71, #27ae60); /* Gradasi hijau untuk sukses */
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2000; /* Pastikan ia di atas elemen lain */
+
+    /* Animasi masuk dan keluar */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.notifikasi-popup.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Gaya untuk notifikasi error */
+.notifikasi-popup.error {
+    background: linear-gradient(135deg, #e74c3c, #c0392b); /* Gradasi merah untuk error */
+}
+
+.notifikasi-popup i {
+    font-size: 1.2em;
+}
+
+.info-modal {
+    max-width: 550px;
+    text-align: center;
+}
+
+.info-modal .modal-header h2 {
+    font-size: 1.5em;
+    width: 100%;
+    text-align: center;
+}
+.info-modal .modal-header h2 i {
+    color: var(--primary-blue);
+}
+.info-modal .modal-body p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #ccc;
+}
+
+.info-modal .modal-body p strong {
+    color: #fff;
+}
+
+.code-wrapper {
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.code-wrapper code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #2979ff; /* Warna biru agar menonjol */
+    word-break: break-all;
+}
+
+#copy-code-btn {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+#copy-code-btn:hover {
+    color: #fff;
+}
+.extra-links {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.emergency-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: #8B949E; /* Warna abu-abu yang tidak mencolok */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.emergency-link:hover {
+    color: #e74c60; /* Warna merah saat disentuh untuk menandakan bahaya */
+    text-decoration: underline;
+}
+
+.alternative-actions {
+    margin-top: 45px;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+}
+
+.alternative-actions p {
+    font-size: 14px;
+    color: #8B949E;
+    margin-bottom: 15px;
+}
+.custom-icon-wipe{
+    width: 100px;
+}
+
+.action-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: rgba(231, 76, 60, 0.1); /* Latar belakang merah transparan sebagai peringatan */
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.action-card:hover {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: rgba(231, 76, 60, 0.5);
+    transform: translateY(-3px);
+}
+
+
+.action-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.action-text strong {
+    font-weight: 600;
+}
+
+.action-text span {
+    font-size: 12px;
+    color: #b3b3b3;
+}
+.modal-error-text {
+    color: #ff0000; /* Warna merah yang lebih cerah */
+    font-size: 14px; /* Dibuat sedikit lebih besar */
+    font-weight: 500;
+    text-align: center;
+    
+    /* Secara default, sembunyikan total */
+    max-height: 0;
+    opacity: 0;
+    margin: 0; /* Hilangkan margin saat tersembunyi */
+    
+    /* Animasi saat muncul */
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease-in-out;
+}
+
+/* Saat kelas .show ditambahkan oleh JS, elemen ini akan muncul */
+.modal-error-text.show {
+    opacity: 1;
+    max-height: 50px; /* Beri ruang yang cukup untuk teks */
+    margin-top: 15px; /* Beri jarak dari atas saat muncul */
+}
+.custom-icon-shield{
+  max-width: 50px;
+  margin-top: 10px;
+}
+.custom-icon-copy2{
+  max-width: 40px;
+  margin-top: 10px;
 }

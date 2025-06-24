@@ -1,4 +1,5 @@
 /* --- SIDEBAR (KOLOM KIRI) --- */
+
 .sidebar {
     width: 380px;
     flex-shrink: 0;
@@ -93,7 +94,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     margin-right: 20px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.05);
     border-left-color: #2979ff;
     z-index: 2;
     transform: scale(1.2);
@@ -141,61 +142,385 @@
     transform: scale(1);
 }
 
-.sidebar-content-bawah {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.sidebar-content-bawah { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+    padding-top: 20px; /* Beri jarak dari menu di atasnya */
+}
+.garis { 
+    display: flex; 
+    flex-direction: column; 
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 10px; 
+    padding-top: -20px; /* Beri jarak dari menu di atasnya */
 }
 
+/* --- Tombol Logout (Tetap sama, hanya merapikan) --- */
 .logout-area a {
-    display: block;
-    width: 100%;
-    text-align: center;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px;
+    width: 100%; 
+    text-align: center; 
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05); 
     border-radius: 8px;
-    text-decoration: none;
-    color: #8B949E;
+    text-decoration: none; 
+    color: #8B949E; 
     font-weight: 600;
     transition: all 0.3s ease;
 }
-
-.logout-area a:hover {
-    background: #e74c3c;
-    color: #fff;
+.logout-area a:hover { 
+    background: #e74c3c; 
+    color: #fff; 
+    transform: translateY(-2px);
+    box-shadow: 0 0px 20px rgba(253, 3, 3, 0.3);
 }
 
+
+
+/* --- Area Profil dengan Animasi Baru --- */
+.profile-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 10px;
+    position: relative; /* Penting untuk pseudo-element */
+    overflow: hidden; /* Penting untuk efek glow */
+    
+    
+    /* ANIMASI UTAMA: Kita animasikan semua properti yang relevan */
+    transition: background-position 0.4s ease, border-left-color 0.4s ease;
+    
+    
+}
+.profile-link:hover{
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    transform: scale(1.02);
+}
+.profile-link a.active ~ a {
+    animation: bounceDown 0.4s ease forwards;
+}
+
+.profile-link a.active + a {
+    animation: bounceUp 0.4s ease forwards;
+}
+/* Saat link profil aktif atau di-hover */
+.profile-link.active {
+    /* Geser background untuk memunculkan warnanya */
+    background-position: 0% 0;
+    background-color: rgba(41, 121, 255, 0.1);
+    
+}
+
+/* Efek Glow untuk Area Profil */
+.profile-link::before {
+    content: '';
+    position: absolute;
+    left: -50px;
+    top: -50%;
+    width: 100px;
+    height: 200%;
+    filter: blur(30px);
+    z-index: -1;
+    
+    /* State awal: tidak terlihat dan kecil */
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Saat link aktif, nyalakan dan 'pulsakan' glow-nya */
+.profile-link.active::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Menata konten di dalam profile-link agar tidak terpengaruh */
 .profile-area {
+    display: flex; 
+    align-items: center; 
+    gap: 15px;
+    padding: 15px 10px; /* Beri padding agar tidak terlalu mepet */
+}
+
+.user-avatar { 
+    width: 40px; 
+    height: 40px; 
+    background-color: #C4C4C4; 
+    border-radius: 50%; 
+    flex-shrink: 0; 
+    background-size: cover;
+    background-position: center;
+}
+
+.user-info { 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+}
+.user-info .user-name { 
+    font-weight: 600; 
+    font-size: 14px; 
+    color: #fff; /* Pastikan teks selalu terlihat jelas */
+}
+.user-info .user-email { 
+    font-size: 12px; 
+    color: #8B949E; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+/* --- Gaya untuk Modal --- */
+.modal {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: none;
+  justify-content: center; align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal.show {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-content {
+  background: rgba(22, 27, 34, 0.5); 
+  border: 1px solid rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(20px);
+  border-radius: 15px;
+  padding: 30px 40px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+  transform: scale(1);
+}
+
+/* ===== KONFIRMASI KHUSUS ===== */
+.confirmation-modal {
+  max-width: 450px;
+  text-align: center;
+  padding: 40px 30px;
+  position: relative;
+}
+
+/* Ikon tengah atas */
+.custom-icon-alert {
+  max-width: 120px;
+}
+.custom-icon-eye {
+  width: 24px;
+  height: 24px;
+  transition: opacity 0.3s ease;
+  object-fit: contain;
+}
+.custom-icon-lock{
+  max-width: 18px;
+}
+.custom-icon-shield{
+  max-width: 30px;
+}
+.custom-icon-sidebar{
+  max-width: 50px;
+  margin: -10px;
+}
+.custom-icon-mail{
+  max-width: 20px;
+}
+.custom-icon-copy{
+  max-width: 30px;
+  margin-top: 5px;
+}
+.custom-icon-copy2{
+  max-width: 40px;
+  margin-top: 10px;
+}
+/* Judul */
+.confirmation-modal h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 25px;
+}
+
+/* Deskripsi */
+.confirmation-modal p {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Tombol sejajar tengah */
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-buttons button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Tombol style */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.btn-secondary:hover {
+  background: rgba(160, 160, 160, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 0px 10px rgba(196, 196, 196, 0.1);
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+.btn-danger:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 0px 10px rgba(253, 3, 3, 0.3);
+}
+
+.btn-primary {
+  background-color: #256EDB;
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: #0f5ed4;
+  transform: translateY(-2px);
+  box-shadow: 0 0px 10px rgba(41, 121, 255, 0.3);
+}
+
+/* Untuk modal dengan input */
+.modal-content .input-group { margin-bottom: 20px; }
+.modal-content label {
+  display: block;
+  margin-bottom: 8px;
+  color: #b3b3b3;
+}
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+}
+.modal-content textarea {
+  resize: vertical;
+}
+
+/* Optional close button */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+.detail-body { display: flex; flex-direction: column; gap: 15px; }
+.detail-group { display: flex; flex-direction: column; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); width: 100%;}
+.detail-group label { color: #8B949E; font-size: 12px; margin-bottom: 5px; }
+.detail-group span, .detail-group p { font-weight: 500; font-size: 16px; }
+.password-viewer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+.password-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+#detailNote { background: rgba(255, 255, 255, 0.05);; padding: 10px; border-radius: 6px; white-space: pre-wrap; word-break: break-word; width: 100%; }
+.icon-btn { background: none; border: none; color: #b3b3b3; font-size: 18px; cursor: pointer; margin-left: 10px; }
+
+/* ================================== */
+/* GAYA UNTUK NOTIFIKASI POP-UP KUSTOM */
+/* ================================== */
+
+.notifikasi-popup {
+    position: fixed; /* Tetap di layar bahkan saat di-scroll */
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2ecc71, #27ae60); /* Gradasi hijau untuk sukses */
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 20px;
+    gap: 10px;
+    z-index: 2000; /* Pastikan ia di atas elemen lain */
+
+    /* Animasi masuk dan keluar */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    background-color: #C4C4C4;
-    border-radius: 50%;
-    flex-shrink: 0;
+.notifikasi-popup.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.user-info {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+/* Gaya untuk notifikasi error */
+.notifikasi-popup.error {
+    background: linear-gradient(135deg, #e74c3c, #c0392b); /* Gradasi merah untuk error */
 }
 
-.user-info .user-name {
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.user-info .user-email {
-    font-size: 12px;
-    color: #8B949E;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.notifikasi-popup i {
+    font-size: 1.2em;
 }

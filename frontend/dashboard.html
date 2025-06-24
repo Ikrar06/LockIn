@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Brankas Aman</title>
+    <title>Dashboard - Secure Vault</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="sidebar.css">
@@ -19,89 +19,114 @@
                 <div class="logo-box"></div>
                 <h3>Lock<span class="text-biru">In</span></h3>
             </div>
-
             <div class="greeting-area">
                 <h2>HI, <span id="nama-pengguna-sapaan"></span></h2>
             </div>
-
             <ul class="menu-list">
-                <li><a href="dashboard.html" class="active"><i class="fas fa-chart-pie"></i> dashboard</a></li>
-                <li><a href="bank.html"><i class="fas fa-key"></i> password bank</a></li>
-                <li><a href="generator.html"><i class="fas fa-dice-d6"></i> password generator</a></li>
-                <li><a href="support.html"><i class="fas fa-question-circle"></i> support</a></li>
+                <li><a href="dashboard.html"><img src="dashboard1.png" class="custom-icon-sidebar" alt="Dashboard Icon" /> Dashboard</a></li>
+                <li><a href="bank.html"><img src="vault1.png" class="custom-icon-sidebar" alt="Vault Icon" /> Password Bank</a></li>
+                <li><a href="generator.html"><img src="generator1.png" class="custom-icon-sidebar" alt="Generator Icon" /> Password Generator</a></li>
+                <li><a href="support.html"><img src="support1.png" class="custom-icon-sidebar" alt="Generator Icon" /> Support</a></li>
             </ul>
         </div>
-        
         <div class="sidebar-content-bawah">
             <div class="logout-area">
-                 <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="#" id="logout-btn">Logout</a>
             </div>
-            <div class="profile-area">
-                <div class="user-avatar"></div>
-                <div class="user-info">
-                    <span class="user-name">user</span>
-                    <span class="user-email" id="user-email-display">memuat...</span>
+            <div class="garis"></div>
+            <a href="profile.html" class="profile-link">
+                <div class="profile-area">
+                    <div class="user-avatar" id="sidebar-avatar"></div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-name-display">user</span>
+                        <span class="user-email" id="user-email-display">loading...</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </nav>
 
     <main class="content">
-    <header class="content-header">
-      <h1>Dashboard</h1>
-    </header>
+        <header class="content-header">
+            <h1>Dashboard</h1>
+            <p>View Your Password Statistics</p>
+        </header>
 
-    <div class="widget-container">
-      <section class="widget-grid">
+        <div class="widget-container">
+            <section class="widget-grid">
 
-        <!-- Widget: Gauge Skor -->
-        <article class="widget glass gauge-widget">
-          <h4><i class="fas fa-shield-alt"></i> Skor Keamanan</h4>
-          <div class="gauge-container">
-            <canvas id="gaugeChart"></canvas>
-            <div class="gauge-score" id="skor-nilai">0</div>
-          </div>
-          <p id="skor-pesan">Menganalisis data brankas Anda...</p>
-        </article>
+                <article class="widget glass gauge-widget" style="grid-area: gauge;">
+                    <h4><img src="shield.png" class="custom-icon-shield" alt="Shield Icon" /> Security Score</h4>
+                    <div class="gauge-container">
+                        <canvas id="gaugeChart"></canvas>
+                        <div class="gauge-score" id="skor-nilai">0%</div>
+                    </div>
+                    <p id="skor-pesan">Analyzing your vault data...</p>
+                </article>
 
-        <article class="widget glass safe-widget">
-          <h4><i class="fas fa-lock"></i> Password Kuat</h4>
-          <p><strong id="stat-kuat">0</strong> sandi dinilai kuat dan aman.</p>
-        </article>
+                <article class="widget glass kuat-widget" style="grid-area: kuat;">
+                    <h4><img src="lock.png" class="custom-icon-lock" alt="Lock Icon" /> Strong Passwords</h4>
+                    <p><strong id="stat-kuat">0</strong> passwords rated strong and secure.</p>
+                </article>
 
-        <article class="widget glass danger-widget">
-          <h4><i class="fas fa-unlock"></i> Password Lemah</h4>
-          <p><strong id="stat-lemah">0</strong> sandi sangat rentan. Gunakan generator untuk menggantinya.</p>
-        </article>
+                <article class="widget glass lemah-widget" style="grid-area: lemah;">
+                    <h4><img src="lock.png" class="custom-icon-lock" alt="Lock Icon" /> Weak Passwords</h4>
+                    <p><strong id="stat-lemah">0</strong> passwords are highly vulnerable. Use the generator to replace them.</p>
+                </article>
 
-        <article class="widget glass warning-widget">
-          <h4><i class="fas fa-copy"></i> Password Berulang</h4>
-          <p><strong id="stat-berulang">0</strong> sandi digunakan lebih dari sekali. Sebaiknya gunakan variasi unik.</p>
-        </article>
+                <article class="widget glass berulang-widget" style="grid-area: berulang;">
+                    <h4><img src="copy.png" class="custom-icon-copy" alt="Copy Icon" /> Reused Passwords</h4>
+                    <p><strong id="stat-berulang">0</strong> passwords are used more than once. Consider using unique variations.</p>
+                </article>
 
-        <article class="widget glass chart-widget">
-          <h4><i class="fas fa-chart-doughnut"></i> Komposisi Sandi</h4>
-          <div class="chart-container">
-            <canvas id="grafik-komposisi"></canvas>
-          </div>
-        </article>
+                <article class="widget glass chart-widget" style="grid-area: komposisi;">
+                    <h4><i class="fas fa-chart-doughnut"></i> Password Composition</h4>
 
-        <article class="widget glass stats-widget">
-          <h4><i class="fas fa-hashtag"></i> Statistik Ringkasan</h4>
-          <ul>
-            <li><span>Total Sandi</span><strong id="stats-total">0</strong></li>
-            <li><span>Entri Terlemah</span><strong id="stats-terlemah">-</strong></li>
-          </ul>
-        </article>
+                    <div class="komposisi-container-horizontal">
+                        <div class="chart-container">
+                            <canvas id="grafik-komposisi"></canvas>
+                        </div>
+                        <div class="komposisi-keterangan">
+                            <div class="baris sangat-lemah"><span class="dot"></span> <span class="label-text">Very Weak</span></div>
+                            <div class="baris lemah"><span class="dot"></span> <span class="label-text">Weak</span></div>
+                            <div class="baris sedang"><span class="dot"></span> <span class="label-text">Moderate</span></div>
+                            <div class="baris kuat"><span class="dot"></span> <span class="label-text">Strong</span></div>
+                            <div class="baris sangat-kuat"><span class="dot"></span> <span class="label-text">Very Strong</span></div>
+                        </div>
+                    </div>
+                </article>
 
-      </section>
+                <article class="widget glass stats-widget" style="grid-area: statistik;">
+                    <h4><i class="fas fa-hashtag"></i> Summary Statistics</h4>
+                    <ul>
+                        <li><span>Total Passwords</span><strong id="stats-total">0</strong></li>
+                        <li><span>Weakest Entry</span><strong id="stats-terlemah">-</strong></li>
+                    </ul>
+                </article>
+
+            </section>
+        </div>
+    </main>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirmation-modal">
+            <button class="close-btn" id="confirm-no-btn">&times;</button>
+            <div class="modal-icon">
+                <img src="alert.png" class="custom-icon-alert" alt="Alert Icon" />
+            </div>
+            <h2 id="confirmTitle">Delete Data</h2>
+            <p id="confirmMessage">Are you sure you want to delete this entry? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button type="button" class="btn-secondary" id="confirm-no-btn2">Cancel</button>
+                <button type="button" class="btn-danger" id="confirm-yes-btn">Delete</button>
+            </div>
+        </div>
     </div>
-  </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
     <script src="kripto.js"></script>
     <script src="dashboard.js"></script>
-    <script src="menu.js"></script> 
+    <script src="main-layout.js"></script>
 </body>
 </html>

@@ -1,238 +1,273 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // ==========================================================
-    // BAGIAN 1: INISIALISASI & PERSIAPAN
-    // ==========================================================
+    if (!document.getElementById('passwordList')) return;
 
-    const kunciEnkripsiString = sessionStorage.getItem('kunciEnkripsi');
+    const encryptionKeyString = sessionStorage.getItem('kunciEnkripsi');
     const userEmail = sessionStorage.getItem('userEmail');
 
-    if (!kunciEnkripsiString || !userEmail) {
-        alert("Sesi tidak valid! Silakan login kembali.");
+    if (!encryptionKeyString || !userEmail) {
+        alert("Invalid session! Please log in again.");
         window.location.href = 'auth.html';
         return;
     }
-    const kunciEnkripsi = new Uint8Array(JSON.parse(kunciEnkripsiString)).buffer;
 
-    // --- Selektor Elemen DOM ---
+    const encryptionKey = new Uint8Array(JSON.parse(encryptionKeyString)).buffer;
+
     const passwordList = document.getElementById("passwordList");
     const addModal = document.getElementById("addModal");
     const detailModal = document.getElementById("detailModal");
     const openAddModalBtn = document.getElementById("openAddModal");
     const savePasswordBtn = document.getElementById("savePassword");
     const cancelAddBtn = document.getElementById("cancelAdd");
+    const cancelAdd2Btn = document.getElementById("cancelAdd2");
     const closeDetailBtn = document.getElementById("closeDetail");
     const togglePassBtn = document.getElementById("togglePass");
     const copyPassBtn = document.getElementById("copyPass");
     const addEntryForm = document.getElementById("addEntryForm");
+    const addPasswordInput = document.getElementById("addPassword");
+    const strengthBar = document.getElementById("strength-bar");
+    const strengthText = document.getElementById("strength-text");
 
-    let brankasData = [];
-    let detailDataSaatIni = {};
-    
-    // ==========================================================
-    // BAGIAN 2: FUNGSI INTI (LOAD, SAVE, RENDER)
-    // ==========================================================
-    async function muatDanDekripsiBrankas() {
-        passwordList.innerHTML = `<div class="list-row-info">Memuat brankas...</div>`;
-        
-        // Ambil string mentah dari session storage
+    let vaultData = [];
+    let currentDetailData = {};
+    let isEditing = false;
+    let editingId = null;
+
+    async function loadAndDecryptVault() {
+        passwordList.innerHTML = `<div class="list-row-info">Loading vault...</div>`;
         const encryptedVaultString = sessionStorage.getItem('encryptedVault');
 
-        if (encryptedVaultString && encryptedVaultString !== '""') {
+        if (encryptedVaultString && encryptedVaultString.length > 2 && encryptedVaultString !== '""') {
             try {
-                // Langkah 1: Ubah string menjadi objek JavaScript
-                const paketTerenkripsi = JSON.parse(encryptedVaultString);
+                const encryptedPackage = JSON.parse(encryptedVaultString);
+                if (!encryptedPackage.ct || !encryptedPackage.iv) throw new Error("Invalid session vault data format.");
                 
-                // Pastikan paketnya valid sebelum didekripsi
-                if (!paketTerenkripsi || !paketTerenkripsi.ct || !paketTerenkripsi.iv) {
-                    throw new Error("Format data brankas di sesi tidak valid.");
-                }
+                const decryptedJson = await dekripsi(encryptionKey, encryptedPackage);
+                if (decryptedJson === null) throw new Error("Decryption failed. Possibly corrupt key or data.");
 
-                // Langkah 2: Panggil fungsi dekripsi yang sudah kita perbarui
-                const decryptedJson = await dekripsi(kunciEnkripsi, paketTerenkripsi);
-                
-                if (decryptedJson === null) {
-                    throw new Error("Dekripsi gagal. Kunci atau data mungkin korup.");
-                }
-
-                // Langkah 3: Ubah hasil dekripsi (string JSON) menjadi array
-                brankasData = JSON.parse(decryptedJson) || [];
-
+                vaultData = JSON.parse(decryptedJson) || [];
             } catch (e) {
-                console.error("Gagal memuat atau mendekripsi brankas:", e);
-                brankasData = [];
-                // Tampilkan pesan error yang lebih jelas ke pengguna
-                passwordList.innerHTML = `<div class='list-row-info error'>Gagal memuat data brankas. Coba login kembali.</div>`;
+                console.error("Failed to load or decrypt vault:", e);
+                vaultData = [];
+                passwordList.innerHTML = `<div class='list-row-info error'>Failed to load data. Try logging in again.</div>`;
             }
         } else {
-            brankasData = []; // Brankas memang kosong
+            vaultData = [];
         }
-        // Langkah 4: Tampilkan hasilnya ke layar
-        renderBrankas();
+
+        renderVault();
     }
 
-
-    async function enkripsiDanSimpanBrankas() {
+    async function encryptAndSaveVault() {
         try {
-            const jsonString = JSON.stringify(brankasData);
-            // Panggil fungsi enkripsi baru kita
-            const paketTerenkripsi = await enkripsi(kunciEnkripsi, jsonString);
-            
-            // Ubah seluruh paket menjadi string untuk dikirim dan disimpan
-            const encryptedVaultString = JSON.stringify(paketTerenkripsi);
-            
-            // Kirim paket ini ke server
+            const jsonString = JSON.stringify(vaultData);
+            const encryptedPackage = await enkripsi(encryptionKey, jsonString);
+            const encryptedVaultString = JSON.stringify(encryptedPackage);
+
             const response = await fetch('http://localhost:5000/vault/sync', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    email: userEmail, 
-                    encryptedVault: encryptedVaultString 
-                })
+                body: JSON.stringify({ email: userEmail, encryptedVault: encryptedVaultString })
             });
 
-            if (!response.ok) throw new Error('Gagal sinkronisasi dengan server.');
+            if (!response.ok) throw new Error('Failed to sync with server.');
 
             sessionStorage.setItem('encryptedVault', encryptedVaultString);
-
-            console.log("Brankas berhasil disinkronkan ke server DAN sesi lokal diperbarui.");
+            console.log("Vault successfully synced and local session updated.");
         } catch (error) {
-            console.error("Gagal menyimpan brankas:", error);
-            alert("Gagal menyimpan perubahan ke server.");
+            console.error("Failed to save vault:", error);
+            window.utils.tampilkanNotifikasi("Failed to save changes to server.", 'error');
         }
     }
 
-    function renderBrankas() {
+    function renderVault() {
         passwordList.innerHTML = "";
-        if (brankasData.length === 0) {
-            passwordList.innerHTML = "<div class='list-row-info'>Brankas kosong. Klik 'Tambah Baru' untuk memulai.</div>";
+        if (vaultData.length === 0) {
+            passwordList.innerHTML = "<div class='list-row-info'>Vault is empty. Click 'Add New Entry' to get started.</div>";
             return;
         }
-        brankasData.forEach(data => {
+
+        vaultData.forEach(data => {
             const row = document.createElement("div");
             row.className = "list-row";
-            const securityClass = data.security === 'kuat' ? 'text-green-400' : data.security === 'sedang' ? 'text-yellow-400' : 'text-red-400';
+            const securityClass = `text-${data.security.toLowerCase().replace(/\s+/g, '-')}`;
             
             row.innerHTML = `
-                <div>${data.name}</div>
-                <div>${data.lastUsed}</div>
-                <div>${data.username}</div>
-                <div class="font-bold ${securityClass}">${data.security.charAt(0).toUpperCase() + data.security.slice(1)}</div>
+                <div class="font-semibold">${data.name || '-'}</div>
+                <div>${data.lastUsed || '-'}</div>
+                <div>${data.username || '-'}</div>
+                <div class="font-bold ${securityClass}">${data.security ? data.security.charAt(0).toUpperCase() + data.security.slice(1) : '-'}</div>
                 <div class="action-buttons">
-                    <button onclick='window.app.showDetail("${data.id}")' title="Lihat"><i class="fas fa-eye"></i></button>
-                    <button onclick='window.app.editPassword("${data.id}")' title="Edit"><i class="fas fa-edit"></i></button>
-                    <button onclick='window.app.deletePassword("${data.id}")' class="delete-btn" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick='window.app.showDetail("${data.id}")' title="View Detail"><img src="eye.png" class="custom-icon-eye" alt="Eye Icon" /></button>
+                    <button onclick='window.app.editPassword("${data.id}")' title="Edit"><img src="edit.png" class="custom-icon-eye" alt="Edit Icon" /></button>
+                    <button onclick='window.app.deletePassword("${data.id}")' class="delete-btn" title="Delete"><img src="delete.png" class="custom-icon-eye" alt="Delete Icon" /></button>
                 </div>
             `;
             passwordList.appendChild(row);
         });
     }
 
-    // ==========================================================
-    // BAGIAN 3: FUNGSI INTERAKSI (Namespace untuk event `onclick`)
-    // ==========================================================
+    function evaluatePasswordStrength(password) {
+        if (!password) return 'Very Weak';
+        const result = zxcvbn(password);
+        const score = result.score;
+        switch (score) {
+            case 0: return 'Very Weak';
+            case 1: return 'Weak';
+            case 2: return 'Medium';
+            case 3: return 'Strong';
+            case 4: return 'Very Strong';
+            default: return 'Weak';
+        }
+    }
+
     window.app = {
         showDetail: (id) => {
-            const data = brankasData.find(item => item.id === id);
-            if (!data) return;
+            const data = vaultData.find(item => item.id === id);
+            if (!data || !detailModal) return;
+
             document.getElementById("detailName").textContent = data.name;
             document.getElementById("detailUsername").textContent = data.username;
             document.getElementById("detailPassword").textContent = "********";
             document.getElementById("detailNote").textContent = data.note || "-";
             document.getElementById("detailSecurity").textContent = data.security;
-            document.getElementById("detailLastUsed").textContent = data.lastUsed;detailDataSaatIni = data;
+            document.getElementById("detailLastUsed").textContent = data.lastUsed;
+
+            currentDetailData = data;
             detailModal.classList.add("show");
         },
 
         editPassword: (id) => {
-            const data = brankasData.find(item => item.id === id);
-            if (!data) return;
+            const data = vaultData.find(item => item.id === id);
+            if (!data || !addModal) return;
+
             addEntryForm.reset();
             addModal.classList.add("show");
-            document.getElementById("modalTitle").textContent = "Edit Kata Sandi";
+            document.getElementById("modalTitle").textContent = "Edit Entry";
             document.getElementById("addName").value = data.name;
             document.getElementById("addUsername").value = data.username;
             document.getElementById("addPassword").value = data.password;
             document.getElementById("addNote").value = data.note;
-            detailDataSaatIni = { ...data, isEditing: true };
+
+            isEditing = true;
+            editingId = id;
+
+            addPasswordInput.dispatchEvent(new Event('input'));
         },
 
-        deletePassword: (id) => {
-            if (!confirm("Anda yakin ingin menghapus data ini? Aksi ini tidak bisa dibatalkan.")) return;
-            brankasData = brankasData.filter(item => item.id !== id);
-            renderBrankas();
-            enkripsiDanSimpanBrankas();
+        deletePassword: async (id) => {
+            if (window.utils && typeof window.utils.tampilkanConfirmModal === 'function') {
+                const confirmed = await window.utils.tampilkanConfirmModal(
+                    "Are you sure you want to delete this entry? This action cannot be undone.",
+                    {
+                        judul: "Delete Data",
+                        tombolYa: "Delete",
+                        kelasTombolYa: "btn-danger"
+                    }
+                );
+                if (confirmed) {
+                    vaultData = vaultData.filter(item => item.id !== id);
+                    renderVault();
+                    await encryptAndSaveVault();
+                    window.utils.tampilkanNotifikasi("Entry deleted successfully!");
+                } else {
+                    console.log("Delete action was cancelled by the user.");
+                }
+            }
         }
     };
 
-    function evaluatePasswordStrength(password) {
-        if (!password) return 'lemah';
-        const score = zxcvbn(password).score; // Gunakan zxcvbn untuk skor 0-4
-        if (score >= 3) return "kuat";
-        if (score >= 1) return "sedang";
-        return "lemah";
+    function setupEventListener(element, event, handler) {
+        if (element) {
+            element.addEventListener(event, handler);
+        }
     }
 
-    // ==========================================================
-    // BAGIAN 4: EVENT LISTENERS
-    // ==========================================================
-    openAddModalBtn.addEventListener('click', () => {
+    setupEventListener(openAddModalBtn, 'click', () => {
         addEntryForm.reset();
-        document.getElementById("modalTitle").textContent = "Tambah Entri Baru";
-        detailDataSaatIni = {};
-        addModal.classList.add("show");
+        document.getElementById("modalTitle").textContent = "Add New Entry";
+        isEditing = false;
+        editingId = null;
+        if (strengthBar) strengthBar.className = 'strength-bar';
+        if (strengthText) strengthText.textContent = '';
+        if (addModal) addModal.classList.add("show");
     });
-    
-    savePasswordBtn.addEventListener('click', () => {
+
+    setupEventListener(savePasswordBtn, 'click', async () => {
         const passwordValue = document.getElementById("addPassword").value;
         const newData = {
-            id: detailDataSaatIni.isEditing ? detailDataSaatIni.id : Date.now().toString(),
+            id: isEditing ? editingId : Date.now().toString(),
             name: document.getElementById("addName").value,
             username: document.getElementById("addUsername").value,
             password: passwordValue,
             note: document.getElementById("addNote").value,
-            lastUsed: new Date().toLocaleString("id-ID", { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            lastUsed: new Date().toLocaleString("en-US"),
             security: evaluatePasswordStrength(passwordValue)
         };
 
         if (!newData.name || !newData.username || !newData.password) {
-            alert("Nama Situs, Username, dan Password tidak boleh kosong!");
+            window.utils.tampilkanNotifikasi("Site Name, Username, and Password are required!", 'error');
             return;
         }
 
-        if (detailDataSaatIni.isEditing) {
-            brankasData = brankasData.map(item => item.id === newData.id ? newData : item);
+        if (isEditing) {
+            vaultData = vaultData.map(item => item.id === editingId ? newData : item);
         } else {
-            brankasData.push(newData);
+            vaultData.push(newData);
         }
 
-        addModal.classList.remove("show");
-        renderBrankas();
-        enkripsiDanSimpanBrankas();
+        if (addModal) addModal.classList.remove("show");
+        renderVault();
+        await encryptAndSaveVault();
+        const successMsg = isEditing ? "Entry updated successfully!" : "New entry saved!";
+        window.utils.tampilkanNotifikasi(successMsg);
     });
 
-    cancelAddBtn.addEventListener('click', () => addModal.classList.remove("show"));
-    closeDetailBtn.addEventListener('click', () => detailModal.classList.remove("show"));
+    setupEventListener(cancelAddBtn, 'click', () => addModal.classList.remove("show"));
+    setupEventListener(cancelAdd2Btn, 'click', () => addModal.classList.remove("show"));
+    setupEventListener(closeDetailBtn, 'click', () => detailModal.classList.remove("show"));
 
-    togglePassBtn.addEventListener('click', () => {
-        const span = document.getElementById("detailPassword");
-        const icon = togglePassBtn.querySelector('i');
-        if (span.textContent === "********") {
-            span.textContent = detailDataSaatIni.password;
-            icon.classList.replace('fa-eye', 'fa-eye-slash');
+    setupEventListener(togglePassBtn, 'click', () => {
+        const passwordSpan = document.getElementById("detailPassword");
+        const iconImg = togglePassBtn.querySelector('img');
+        if (!passwordSpan || !iconImg || !currentDetailData.password) return;
+
+        if (passwordSpan.textContent === "********") {
+            passwordSpan.textContent = currentDetailData.password;
+            iconImg.src = "eye-closed.png";
+            togglePassBtn.setAttribute('title', 'Hide');
         } else {
-            span.textContent = "********";
-            icon.classList.replace('fa-eye-slash', 'fa-eye');
+            passwordSpan.textContent = "********";
+            iconImg.src = "eye.png";
+            togglePassBtn.setAttribute('title', 'Show');
         }
     });
 
-    copyPassBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(detailDataSaatIni.password).then(() => {
-            alert("Password berhasil disalin!");
-        }).catch(() => alert("Gagal menyalin."));
+    setupEventListener(copyPassBtn, 'click', () => {
+        if (currentDetailData.password) {
+            navigator.clipboard.writeText(currentDetailData.password)
+                .then(() => {
+                    window.utils.tampilkanNotifikasi("Password copied to clipboard!");
+                })
+                .catch(err => {
+                    console.error("Copy failed:", err);
+                    window.utils.tampilkanNotifikasi("Failed to copy password.", 'error');
+                });
+        }
     });
-    
-    // ==========================================================
-    // BAGIAN 5: JALANKAN SAAT HALAMAN DIBUKA
-    // ==========================================================
-    muatDanDekripsiBrankas();
+
+    setupEventListener(addPasswordInput, 'input', () => {
+        const password = addPasswordInput.value;
+        if (password === "") {
+            strengthBar.className = 'strength-bar';
+            strengthText.textContent = '';
+            return;
+        }
+        const strength = evaluatePasswordStrength(password);
+        const strengthClass = strength.toLowerCase().replace(' ', '-');
+        strengthBar.className = 'strength-bar ' + strengthClass;
+        strengthText.className = 'strength-text ' + strengthClass;
+        strengthText.textContent = strength;
+    });
+
+    loadAndDecryptVault();
 });

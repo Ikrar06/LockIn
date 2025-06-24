@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Bank - Brankas Aman</title>
+    <title>Password Bank - SafeVault</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
     <link rel="stylesheet" href="sidebar.css">
     <link rel="stylesheet" href="bank.css">
@@ -25,42 +25,47 @@
                     <h2>HI, <span id="nama-pengguna-sapaan"></span></h2>
                 </div>
                 <ul class="menu-list">
-                    <li><a href="dashboard.html"><i class="fas fa-chart-pie"></i> dashboard</a></li>
-                    <li><a href="bank.html" class="active"><i class="fas fa-key"></i> password bank</a></li>
-                    <li><a href="generator.html"><i class="fas fa-dice-d6"></i> password generator</a></li>
-                    <li><a href="support.html"><i class="fas fa-question-circle"></i> support</a></li>
-                </ul>
+                    <li><a href="dashboard.html"><img src="dashboard1.png" class="custom-icon-sidebar" alt="Dashboard Icon" /> Dashboard</a></li>
+                    <li><a href="bank.html"><img src="vault1.png" class="custom-icon-sidebar" alt="Vault Icon" /> Password Bank</a></li>
+                    <li><a href="generator.html"><img src="generator1.png" class="custom-icon-sidebar" alt="Generator Icon" /> Password Generator</a></li>
+                    <li><a href="support.html"><img src="support1.png" class="custom-icon-sidebar" alt="Generator Icon" /> Support</a></li>
+                 </ul>
             </div>
             <div class="sidebar-content-bawah">
                 <div class="logout-area">
                      <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
-                <div class="profile-area">
-                    <div class="user-avatar"></div>
-                    <div class="user-info">
-                        <span class="user-name" id="user-name-display">user</span>
-                        <span class="user-email" id="user-email-display">memuat...</span>
+                <div class="garis"></div>
+                <a href="profile.html" class="profile-link">
+                    <div class="profile-area">
+                        <div class="user-avatar" id="sidebar-avatar"></div>
+                        <div class="user-info">
+                            <span class="user-name" id="user-name-display">user</span>
+                            <span class="user-email" id="user-email-display">loading...</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </nav>
 
         <main class="content">
             <header class="content-header">
-                <h1>Password Bank</h1>
-                <button id="openAddModal" class="action-btn"><i class="fas fa-plus"></i> Tambah Entri Baru</button>
+                <div class="judul">
+                    <h1>Password Bank</h1>
+                    <p>Secure Your Passwords</p>
+                </div>
+                <button id="openAddModal" class="action-btn"><i class="fas fa-plus"></i> Add New Entry</button>
             </header>
 
             <div class="widget-container list-container">
                 <div class="list-header">
-                    <div>Nama Situs</div>
-                    <div>Terakhir Digunakan</div>
-                    <div>Username</div>
-                    <div>Keamanan</div>
-                    <div class="aksi-header">Aksi</div>
+                    <div>Site Name</div>
+                    <div>Last Used</div>
+                    <div>Username/Email</div>
+                    <div>Security</div>
+                    <div class="aksi-header">Action</div>
                 </div>
                 <div class="list-body" id="passwordList">
-                    <div class="list-row-info">Memuat data brankas...</div>
                 </div>
             </div>
         </main>
@@ -68,27 +73,33 @@
 
     <div id="addModal" class="modal">
         <div class="modal-content">
-            <h2 id="modalTitle">Tambah Entri Baru</h2>
+            <button class="close-btn" id="cancelAdd">&times;</button>
+            <h2 class="modalTitle" id="modalTitle">Add New Entry</h2>
             <form id="addEntryForm">
                 <div class="input-group">
-                    <label for="addName">Nama Situs / Aplikasi</label>
-                    <input type="text" id="addName" placeholder="Contoh: Facebook, Gmail" required>
+                    <label for="addName">Site / App Name</label>
+                    <input type="text" id="addName" placeholder="e.g., Facebook, Gmail" required>
                 </div>
                 <div class="input-group">
                     <label for="addUsername">Username / Email</label>
-                    <input type="text" id="addUsername" placeholder="Contoh: budi.santoso@email.com" required>
+                    <input type="text" id="addUsername" placeholder="e.g., john.doe@email.com" required>
                 </div>
                 <div class="input-group">
                     <label for="addPassword">Password</label>
                     <input type="password" id="addPassword" required>
+                    
+                    <div class="strength-meter" id="strength-meter-container">
+                        <div class="strength-bar" id="strength-bar"></div>
+                    </div>
+                    <p class="strength-text" id="strength-text"></p>
                 </div>
                 <div class="input-group">
-                    <label for="addNote">Catatan (Opsional)</label>
-                    <textarea id="addNote" rows="3" placeholder="Contoh: PIN backup, pertanyaan keamanan..."></textarea>
+                    <label for="addNote">Note (Optional)</label>
+                    <textarea id="addNote" rows="3" placeholder="e.g., Backup PIN, security questions..."></textarea>
                 </div>
                 <div class="modal-buttons">
-                    <button type="button" id="cancelAdd" class="btn-secondary">Batal</button>
-                    <button type="button" id="savePassword" class="btn-primary">Simpan</button>
+                    <button type="button" id="cancelAdd2" class="btn-secondary">Cancel</button>
+                    <button type="button" id="savePassword" class="btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -96,8 +107,9 @@
 
     <div id="detailModal" class="modal">
         <div class="modal-content">
+            <button class="close-btn" id="confirm-close-btn">&times;</button>
             <div class="modal-header">
-                <h2 id="detailName">Detail Entri</h2>
+                <h2 id="detailName">Entry Detail</h2>
                 <button id="closeDetail" class="close-btn">&times;</button>
             </div>
             <div class="detail-body">
@@ -110,29 +122,46 @@
                     <div class="password-viewer">
                         <span id="detailPassword">********</span>
                         <div class="password-actions">
-                            <button id="togglePass" class="icon-btn" title="Lihat/Sembunyikan"><i class="fas fa-eye"></i></button>
-                            <button id="copyPass" class="icon-btn" title="Salin"><i class="fas fa-copy"></i></button>
+                            <button id="togglePass" class="icon-btn" title="Show/Hide">
+                            <img src="eye.png" alt="Toggle Visibility" class="custom-icon-eye" />
+                            </button>
+                            <button id="copyPass" class="icon-btn" title="Copy"><img src="copy.png" class="custom-icon-copy" alt="Copy Icon" /></button>
                         </div>
                     </div>
                 </div>
                 <div class="detail-group">
-                    <label>Keamanan:</label>
+                    <label>Security:</label>
                     <span id="detailSecurity">-</span>
                 </div>
                 <div class="detail-group">
-                    <label>Terakhir Digunakan:</label>
+                    <label>Last Used:</label>
                     <span id="detailLastUsed">-</span>
                 </div>
                 <div class="detail-group">
-                    <label>Catatan:</label>
+                    <label>Note:</label>
                     <p id="detailNote">-</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirmation-modal">
+            <button class="close-btn" id="confirm-no-btn">&times;</button>
+            <div class="modal-icon">
+                <img src="alert.png" class="custom-icon-alert" alt="Alert Icon" />
+            </div>
+            <h2 id="confirmTitle">Delete Data</h2>
+            <p id="confirmMessage">Are you sure you want to delete this entry? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button type="button" class="btn-secondary" id="confirm-no-btn2">Cancel</button>
+                <button type="button" class="btn-danger" id="confirm-yes-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <script src="kripto.js"></script>
-    <script src="menu.js"></script>
+    <script src="main-layout.js"></script> 
     <script src="bank.js"></script>
 </body>
 </html>

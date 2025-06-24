@@ -1,0 +1,312 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ========== BASIC RESET ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #161616;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px;
+}
+
+:root {
+    /* Variabel untuk posisi mouse (dikontrol oleh JS) */
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+
+    /* Variabel untuk warna grid */
+    --grid-size: 40px;
+    --grid-color-dim: rgba(255, 255, 255, 0.015); /* Warna grid redup */
+    --grid-color-bright: rgba(41, 121, 255, 0.3); /* Warna grid terang (biru) */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0D1117;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px;
+    position: relative; /* Penting untuk pseudo-element */
+
+    /* LAPIS BAWAH: Grid yang redup */
+    background-image:
+        linear-gradient(var(--grid-color-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-dim) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+}
+
+/* LAPIS ATAS: Grid terang yang akan kita "ungkap" dengan topeng */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Pola grid yang sama persis, tapi dengan warna terang */
+    background-image:
+        linear-gradient(var(--grid-color-bright) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-bright) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+
+    /* INI DIA KUNCINYA: MASKER/TOPENG AJAIB */
+    mask-image: radial-gradient(
+        circle 200px at var(--mouse-x) var(--mouse-y),
+        #fff 0%, /* Area yang terlihat */
+        transparent 100% /* Area yang tersembunyi */
+    );
+    -webkit-mask-image: radial-gradient(
+        circle 200px at var(--mouse-x) var(--mouse-y),
+        #fff 0%,
+        transparent 100%
+    );
+
+    z-index: -1; /* Posisikan di belakang konten */
+}
+
+/* Background Blur Shapes */
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(200px);
+    z-index: -1;
+}
+.shape1 { width: 600px; height: 600px; background: #256EDB; top: -30%; left: -15%; }
+.shape2 { width: 800px; height: 1000px; background: #256EDB; bottom: -35%; right: -20%; }
+
+
+/* Page Layout */
+.page-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* Konten utama */
+.content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-left: 30px;
+}
+
+/* Header konten */
+.content-header {
+    padding-bottom: 20px;
+}
+.content-header h1 {
+    font-size: 2.2em;
+    font-weight: 600;
+}
+.content-header p {
+    color: #aaa;
+    margin-top: 5px;
+}
+
+/* Container utama support */
+.support-container {
+    padding: 30px;
+    overflow-y: auto;
+    flex-grow: 1;
+    background: rgba(30, 30, 46, 0.4);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Grid layout dua kolom */
+.support-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* FAQ Section */
+.faq-section h3, .info-section h3 {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.faq-item {
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.faq-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+}
+.faq-toggle i {
+    transition: transform 0.3s ease;
+}
+.faq-toggle.active i {
+    transform: rotate(180deg);
+}
+
+.faq-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding-top 0.4s ease-out;
+    color: #aaa;
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+.faq-content.show {
+    max-height: 200px;
+    padding-top: 15px;
+}
+
+/* Info Section */
+.info-box {
+    padding: 25px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* --- TAMBAHAN & PERUBAHAN DI SINI --- */
+    display: flex;             /* Ubah menjadi flexbox */
+    flex-direction: column;    /* Arahkan konten ke bawah */
+    align-self: start;         /* Membuat box tidak meregang memenuhi tinggi grid */
+}
+.info-box h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.info-box p {
+    color: #aaa;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+.support-email {
+    display: inline-block;
+    background: #2979ff;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+.support-email:hover {
+    background-color: #0D69E1;
+}
+
+.email-contact {
+    display: flex;
+    /* align-items: stretch; TIDAK PERLU LAGI, kita ganti dengan cara di bawah */
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    margin-top: auto; /* Mendorong tombol ini ke bagian bawah info-box */
+}
+.support-email-link {
+    flex-grow: 1;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s;
+}
+
+.support-email-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Tombol Salin yang Diperbaiki */
+#copy-email-btn {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0 15px; /* Atur padding horizontal saja */
+    /* Hapus 'height' dan 'align-self' agar tingginya otomatis sama */
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center; /* Memastikan ikon di tengah secara vertikal */
+}
+
+#copy-email-btn:hover {
+    background-color: #0D69E1;
+}
+.emergency-data{
+    display: inline-block;
+    background: #e74c3c;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+.emergency-data:hover {
+    background-color: #c0392b;
+}
+.widget-container::-webkit-scrollbar {
+    width: 8px;
+}
+.widget-container {
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE */
+}
+.widget-container::-webkit-scrollbar {
+    display: none;                  /* Webkit */
+}
+.widget-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+.widget-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+.widget-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

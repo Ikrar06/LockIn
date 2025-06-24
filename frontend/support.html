@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - LockIn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <link rel="stylesheet" href="sidebar.css"> 
+    <link rel="stylesheet" href="support.css"> 
+</head>
+<body>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+
+    <div class="page-container">
+        <nav class="sidebar">
+            <div class="sidebar-content-atas">
+                <div class="logo-area">
+                    <div class="logo-box"></div>
+                    <h3>Lock<span class="text-biru">In</span></h3>
+                </div>
+                <div class="greeting-area">
+                    <h2>HI, <span id="nama-pengguna-sapaan"></span></h2>
+                </div>
+                <ul class="menu-list">
+                    <li><a href="dashboard.html"><img src="dashboard1.png" class="custom-icon-sidebar" alt="Dashboard Icon" /> Dashboard</a></li>
+                    <li><a href="bank.html"><img src="vault1.png" class="custom-icon-sidebar" alt="Vault Icon" /> Password Bank</a></li>
+                    <li><a href="generator.html"><img src="generator1.png" class="custom-icon-sidebar" alt="Generator Icon" /> Password Generator</a></li>
+                    <li><a href="support.html"><img src="support1.png" class="custom-icon-sidebar" alt="Generator Icon" /> Support</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-content-bawah">
+                <div class="logout-area">
+                     <a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+                <div class="garis"></div>
+                <a href="profile.html" class="profile-link">
+                    <div class="profile-area">
+                        <div class="user-avatar" id="sidebar-avatar"></div>
+                        <div class="user-info">
+                            <span class="user-name" id="user-name-display">user</span>
+                            <span class="user-email" id="user-email-display">loading...</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </nav>
+
+        <main class="content">
+            <header class="content-header">
+                <h1>Help Center</h1>
+                <p>Find answers and guides to keep your data safe.</p>
+            </header>
+
+            <div class="support-container widget-container">
+                <div class="support-grid">
+                    <div class="faq-section">
+                    <h3>Frequently Asked Questions (FAQ)</h3>
+                    <div class="faq-list">
+
+                        <div class="faq-item glass-box">
+                            <button class="faq-toggle">
+                                <span>What should I do if I forget my Master Password?</span>
+                                <i class="fas fa-chevron-down rotate"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p><strong>Your Master Password cannot be recovered or reset.</strong> Due to our Zero-Knowledge security architecture, your Master Password is your one and only key. We never store it, so we cannot recover it for you. If you lose it, your encrypted data will be inaccessible forever. Please store your Master Password in a very safe place.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item glass-box">
+                            <button class="faq-toggle">
+                                <span>Is my data safe on your servers?</span>
+                                <i class="fas fa-chevron-down rotate"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p><strong>Yes, it's very safe.</strong> All of your vault data (site names, usernames, passwords, notes) is encrypted on your device using a key derived from your Master Password **before** it is sent to our servers. The data stored on our server is just a meaningless encrypted blob. We, not even our system administrators, can see the contents of your vault.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item glass-box">
+                            <button class="faq-toggle">
+                                <span>How do I change my Master Password?</span>
+                                <i class="fas fa-chevron-down rotate"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>You can change your Master Password from the **Profile** page. Please note that changing your Master Password involves re-encrypting your entire vault with a new key. For security reasons, you will be automatically logged out from all devices after a successful Master Password change.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item glass-box">
+                            <button class="faq-toggle">
+                                <span>What is the "Security Score" on my Dashboard?</span>
+                                <i class="fas fa-chevron-down rotate"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>The Security Score is a general health indicator for your vault. It is calculated based on several factors, including the percentage of strong passwords, the number of weak passwords, and the number of reused passwords. A higher score means better overall password hygiene.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item glass-box">
+                            <button class="faq-toggle">
+                                <span>Can I access my passwords if I'm offline?</span>
+                                <i class="fas fa-chevron-down rotate"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>Currently, our application requires an active internet connection to log in and synchronize your encrypted vault from the server. Offline access is not yet supported in this version.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item glass-box">
+                            <button class="faq-toggle">
+                                <span>What if I suspect my account is compromised?</span>
+                                <i class="fas fa-chevron-down rotate"></i>
+                            </button>
+                            <div class="faq-content">
+                                <p>If you suspect unauthorized access, first try to change your Master Password on the Profile page. If you cannot log in or want to immediately delete all your vault data for security reasons, you can use our emergency feature.</p>
+                                <a href="emergency.html" class="emergency-data">Go to Emergency Data Wipe Page</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                    <div class="info-box glass-box">
+                    <h4><img src="shield.png" class="custom-icon-shield" alt="Shield Icon" /> Contact Support Team</h4>
+                    <p>If you encounter a bug or have further security-related questions, feel free to contact us via email.</p>
+                    
+                    <div class="email-contact">
+                        <a href="mailto:lockinftuh@gmail.com" class="support-email-link">
+                            <img src="mail.png" class="custom-icon-mail" alt="Mail Icon" />
+                            <span>lockinftuh@gmail.com</span>
+                        </a>
+                        <button id="copy-email-btn" class="icon-btn" title="Copy Email">
+                            <img src="copy.png" class="custom-icon-copy" alt="Copy Icon" />
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confirmation-modal">
+            <button class="close-btn" id="confirm-no-btn">&times;</button>
+            <div class="modal-icon">
+                <img src="alert.png" class="custom-icon-alert" alt="Alert Icon" />
+            </div>
+            <h2 id="confirmTitle">Delete Data</h2>
+            <p id="confirmMessage">Are you sure you want to delete this entry? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button type="button" class="btn-secondary" id="confirm-no-btn2">Cancel</button>
+                <button type="button" class="btn-danger" id="confirm-yes-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main-layout.js"></script> 
+    <script src="support.js"></script>
+</body>
+</html>

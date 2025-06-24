@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Selamat Datang - Brankas Aman</title>
+    <title>Welcome - LockIn</title>
     <link rel="stylesheet" href="auth.css"/> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 </head>
@@ -17,31 +17,43 @@
 
         <div class="box left-box">
             <form class="form signup-form" id="signup-form">
-                <h2>SignUp</h2>
+                <h2>Create Account</h2>
                 <div class="input-group">
                     <label>Username</label>
-                    <div class="input-field"><img src="user.png" class="custom-icon" alt="User Icon" /><input type="text" id="signup-username" placeholder="Enter your username"required /></div>
+                    <div class="input-field">
+                        <img src="user.png" class="custom-icon" alt="User Icon" />
+                        <input type="text" id="signup-username" placeholder="Enter your username" required />
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>Email</label>
-                    <div class="input-field"><img src="mail.png" class="custom-icon" alt="Mail Icon" /><input type="email" id="signup-email" placeholder="Enter your email address" required /></div>
+                    <div class="input-field">
+                        <img src="mail.png" class="custom-icon" alt="Mail Icon" />
+                        <input type="email" id="signup-email" placeholder="Enter your email address" required />
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>Master Password</label>
-                    <div class="input-field"><img src="lock.png" class="custom-icon" alt="Lock Icon" /><input type="password" id="signup-password" placeholder="Create a strong master password" required /></div>
+                    <div class="input-field">
+                        <img src="lock.png" class="custom-icon" alt="Lock Icon" />
+                        <input type="password" id="signup-password" placeholder="Create a strong master password" required />
+                    </div>
                 </div>
                 <div class="input-group">
                     <label>Confirm Master Password</label>
-                    <div class="input-field"><img src="lock.png" class="custom-icon" alt="Lock Icon" /><input type="password" id="signup-password-confirm" placeholder="Re-enter your master password" required /></div>
+                    <div class="input-field">
+                        <img src="lock.png" class="custom-icon" alt="Lock Icon" />
+                        <input type="password" id="signup-password-confirm" placeholder="Re-enter your master password" required />
+                    </div>
                 </div>
                 <div class="pesan" id="signup-pesan"></div>
-                <button type="submit" class="btn">Daftar</button>
+                <button type="submit" class="btnSL">Sign Up</button>
             </form>
 
             <div class="panel signup-panel">
-                <h3>Don't have account?</h3>
-                <p3>Enter your details and start journey with us</p3>
-                <button class="btn ghost3" id="switchToSignup">Signup</button>
+                <h3>Don't have an account?</h3>
+                <p3>Enter your details and start your journey with LockIn.</p3>
+                <button class="btn ghost3" id="switchToSignup">Sign Up</button>
             </div>
         </div>
 
@@ -63,18 +75,74 @@
                 </div>
             </div>
             <div class="pesan" id="login-pesan"></div>
-            <button type="submit" class="btn">Login</button>
-        </form>
+            <button type="submit" class="btnSL">Login</button>
+
+            <div class="alternative-actions">
+                <p>Can't access your account?</p>
+                <a href="emergency.html" class="action-card">
+                    <img src="fire.png" class="custom-icon-wipe" alt="Wipe Icon" />
+                    <div class="action-text">
+                        <strong>Emergency Wipe</strong>
+                        <span>Delete all your vault data immediately.</span>
+                    </div>
+                </a>
+            </div>
+            </form>
 
             <div class="panel login-panel">
-                <h1>Already have account?</h1>
-                <p1>Login with your existing account to stay connected</p1>
+                <h1>Already have an account?</h1>
+                <p1>Login with your existing account to stay connected with LockIn.</p1>
                 <button class="btn ghost1" id="switchToLogin">Login</button>
             </div>
         </div>
     </div>
 
+    <div id="masterPasswordWarningModal" class="modal">
+        <div class="modal-content confirmation-modal">
+            <button class="close-btn" id="cancel1">&times;</button>
+            <div class="modal-header">
+                <h2><img src="shield.png" class="custom-icon-shield" alt="Shield Icon" /> Important Security Warning</h2>
+            </div>
+            <div class="modal-body">
+                <p>Your Master Password is the <strong>only key</strong> to unlock your vault. We do not store it and cannot recover it for you.</p>
+                <p><strong>If you forget your Master Password, your data will be lost permanently.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <div class="confirm-checkbox-wrapper">
+                    <input type="checkbox" id="confirm-risk-checkbox">
+                    <label for="confirm-risk-checkbox">I understand and accept this risk.</label>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" id="cancel-signup-btn" class="btn-secondary">Cancel</button>
+                    <button type="button" id="continue-signup-btn" class="btn-primary" disabled>Continue Registration</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="infoModal" class="modal">
+        <div class="modal-content info-modal">
+            <div class="modal-header">
+                <h2 id="infoTitle">Pemberitahuan</h2>
+            </div>
+            <div class="modal-body">
+                <p id="infoMessage"></p>
+                <div id="infoCodeWrapper" class="code-wrapper" style="display: none;">
+                    <pre><code id="infoCode"></code></pre>
+                    <button id="copy-code-btn" title="Salin Kode"><img src="copy.png" class="custom-icon-copy2" alt="Copy Icon" /></button>
+                </div>
+            </div>
+            <div class="modal-buttons" style="justify-content: center;">
+                <button type="button" id="info-ok-btn">I Have Saved My Code. Close</button>
+            </div>
+            <div class="modal-footer">
+                <p id="copy-error-message" class="modal-error-text"></p>
+            </div>
+        </div>
+    </div>
+    
+
     <script src="kripto.js"></script>
+    <script src="main-layout.js"></script>
     <script src="auth.js"></script>
 </body>
 </html>

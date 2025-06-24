@@ -1,0 +1,161 @@
+/* File: frontend/emergency.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --danger-red: #e74c60;
+    --warning-yellow: #f1c40f;
+    --dark-bg: #0D1117;
+    --text-light: #e0e0e0;
+    --text-muted: #8B949E;
+    /* Variabel untuk posisi mouse (dikontrol oleh JS) */
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+
+    /* Variabel untuk warna grid */
+    --grid-size: 40px;
+    --grid-color-dim: rgba(255, 255, 255, 0.015); /* Warna grid redup */
+    --grid-color-bright: rgba(255, 41, 41, 0.15); /* Warna grid terang (biru) */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0D1117;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px;
+    position: relative; /* Penting untuk pseudo-element */
+
+    /* LAPIS BAWAH: Grid yang redup */
+    background-image:
+        linear-gradient(var(--grid-color-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-dim) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+}
+
+/* LAPIS ATAS: Grid terang yang akan kita "ungkap" dengan topeng */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Pola grid yang sama persis, tapi dengan warna terang */
+    background-image:
+        linear-gradient(var(--grid-color-bright) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-bright) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+
+    /* INI DIA KUNCINYA: MASKER/TOPENG AJAIB */
+    mask-image: radial-gradient(
+        circle 300px at var(--mouse-x) var(--mouse-y),
+        #fff 0%, /* Area yang terlihat */
+        transparent 100% /* Area yang tersembunyi */
+    );
+    -webkit-mask-image: radial-gradient(
+        circle 300px at var(--mouse-x) var(--mouse-y),
+        #fff 0%,
+        transparent 100%
+    );
+
+    z-index: -1; /* Posisikan di belakang konten */
+}
+
+.shape { position: absolute; border-radius: 50%; filter: blur(200px); z-index: -1; opacity: 0.5; }
+.shape1 { width: 500px; height: 500px; background: var(--danger-red); top: -20%; left: -20%; }
+.shape2 { width: 400px; height: 400px; background: var(--danger-red); bottom: -20%; right: -20%; }
+
+.container {
+    width: 100%; max-width: 550px;
+    background: rgba(22, 27, 34, 0.6);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 20px; padding: 40px; text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.container i.fa-biohazard { font-size: 3.5rem; color: var(--warning-yellow); margin-bottom: 20px; }
+.container h1 { font-size: 2.2em; font-weight: 700; margin-bottom: 15px; }
+.container p { color: var(--text-muted); line-height: 1.7; max-width: 400px; margin-bottom: 30px; }
+
+#wipe-form { width: 100%; display: flex; flex-direction: column; gap: 15px; }
+#wipe-form input {
+    width: 100%; padding: 15px; background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px;
+    color: var(--text-light); font-family: 'Poppins', sans-serif;
+    font-size: 16px; text-align: center;
+}
+#wipe-form button {
+    background-color: #e74c3c; color: white; border: none;
+    padding: 15px; border-radius: 8px; font-weight: 600; font-size: 16px;
+    letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; margin-top: 15px;
+}
+#wipe-form button:hover {background: #c0392b; 
+    color: #fff; 
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+    box-shadow: 0 0px 20px rgba(253, 3, 3, 0.3); }
+
+.message-area { margin-top: 20px; min-height: 24px; font-weight: 500; font-size: 14px; }
+.back-link { margin-top: 20px; color: var(--text-muted); font-size: 14px; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+
+/* --- Gaya untuk Modal Konfirmasi (dipinjam dari style-utama.css) --- */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+    display: none; justify-content: center; align-items: center;
+    z-index: 1000; opacity: 0; transition: opacity 0.3s ease;
+}
+.modal.show { display: flex; opacity: 1; }
+.modal-content {
+    background: rgba(30, 30, 46, 0.4); 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    padding: 30px 40px; border-radius: 15px;
+    width: 120%; max-width: 600px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+.modal.show .modal-content { transform: scale(1); }
+.modal-header h2 { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.5em; margin: 0; }
+.modal-header h2 i { color: var(--warning-yellow); }
+.modal-body p { margin-top: 15px; margin-bottom: 25px; }
+.modal-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+.modal-buttons button { padding: 10px 25px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+.btn-primary { background-color: #2979ff; color: #fff; }
+.btn-danger { background-color: #e74c3c; color: #fff; }
+.btn-secondary { background-color: rgba(255, 255, 255, 0.1); color: #fff; }
+.btn-primary:hover {   
+    background-color: #1263ee; color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0px 10px rgba(41, 121, 255, 0.3); }
+.btn-danger:hover {
+    background: #c0392b; 
+    color: #fff; 
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+    box-shadow: 0 0px 20px rgba(253, 3, 3, 0.3); }
+.btn-secondary:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 0px 10px rgba(92, 92, 92, 0.3);
+    transition: all 0.3s ease;
+    background-color: rgba(155, 155, 155, 0.1);  }
+
+.custom-icon-wipe{
+    width: 200px;
+    margin-top: -40px;
+}

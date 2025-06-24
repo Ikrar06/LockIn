@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ========== BASIC RESET ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #161616;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px;
+}
+
+:root {
+    /* Variabel untuk posisi mouse (dikontrol oleh JS) */
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+
+    /* Variabel untuk warna grid */
+    --grid-size: 40px;
+    --grid-color-dim: rgba(255, 255, 255, 0.015); /* Warna grid redup */
+    --grid-color-bright: rgba(41, 121, 255, 0.3); /* Warna grid terang (biru) */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0D1117;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    color: #fff;
+    overflow: hidden;
+    padding: 20px;
+    position: relative; /* Penting untuk pseudo-element */
+
+    /* LAPIS BAWAH: Grid yang redup */
+    background-image:
+        linear-gradient(var(--grid-color-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-dim) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+}
+
+/* LAPIS ATAS: Grid terang yang akan kita "ungkap" dengan topeng */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Pola grid yang sama persis, tapi dengan warna terang */
+    background-image:
+        linear-gradient(var(--grid-color-bright) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color-bright) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+
+    /* INI DIA KUNCINYA: MASKER/TOPENG AJAIB */
+    mask-image: radial-gradient(
+        circle 200px at var(--mouse-x) var(--mouse-y),
+        #fff 0%, /* Area yang terlihat */
+        transparent 100% /* Area yang tersembunyi */
+    );
+    -webkit-mask-image: radial-gradient(
+        circle 200px at var(--mouse-x) var(--mouse-y),
+        #fff 0%,
+        transparent 100%
+    );
+
+    z-index: -1; /* Posisikan di belakang konten */
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    z-index: -1;
+}
+.shape1 { width: 600px; height: 600px; background: #256EDB; top: -30%; left: -15%; }
+.shape2 { width: 1000px; height: 1000px; background: #256EDB; bottom: -35%; right: -20%; }
+
+.page-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.content {
+    flex-grow: 1;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-header {
+    padding-bottom: 20px;
+}
+.content-header p {
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.profile-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    flex-grow: 1;
+    background: rgba(30, 30, 46, 0.4);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.glass-box {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+.avatar-upload {
+    position: relative;
+    flex-shrink: 0;
+}
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.upload-icon {
+    position: absolute;
+    bottom: -5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    background: #2979ff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+.upload-icon:hover {
+    transform: scale(1.1);
+}
+#profile-upload {
+    display: none;
+}
+
+.header-info h2 {
+    font-size: 2em;
+    font-weight: 600;
+    margin: 0;
+}
+.header-info p {
+    color: #aaa;
+    margin-top: 5px;
+}
+.header-info .join-date {
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* Form Profil */
+.profile-form h4 {
+    font-size: 1.2em;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #aaa;
+    font-size: 14px;
+}
+.input-email {
+    width: 100%;
+    margin-top: 5px;
+    padding: 12px;
+    background: rgba(48, 48, 48, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+}
+.input-dark {
+    width: 100%;
+    margin-top: 5px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+}
+.input-dark:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  filter: brightness(1.5);
+}
+.input-email:disabled {
+    background: rgba(255, 255, 255, 0.08);
+    cursor: not-allowed;
+    color: #8B949E;
+}
+.input-dark i {
+    color: #aaa;
+    margin-right: 10px;
+}
+.input-dark input {
+    background: transparent;
+    border: none;
+    outline: none;
+    margin-left: 20px;
+    color: #fff;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.action-btn {
+    background-color: #2979ff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn:hover{
+    background-color: #0D69E1;
+    transform: translateY(-2px);
+    box-shadow: 0 0px 15px rgba(41, 121, 255, 0.3);
+}
