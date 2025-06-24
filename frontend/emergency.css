@@ -159,3 +159,35 @@ body::before {
     width: 200px;
     margin-top: -40px;
 }
+.confirmation-modal {
+  max-width: 450px;
+  text-align: center;
+  padding: 40px 30px;
+  position: relative;
+}
+
+/* Ikon tengah atas */
+.custom-icon-alert {
+  max-width: 120px;
+}
+.confirmation-modal h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 25px;
+}
+
+/* Deskripsi */
+.confirmation-modal p {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
