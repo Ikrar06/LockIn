@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function handleProfileUpdate(event) {
         event.preventDefault();
-        saveChangesBtn.textContent = 'Saving...';
+        saveChangesBtn.textContent = 'Menyimpan...';
         saveChangesBtn.disabled = true;
 
         const newUsername = document.getElementById('username').value;
@@ -94,20 +94,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         const confirmPassword = document.getElementById('confirm-password').value;
 
         if (newPassword && newPassword !== confirmPassword) {
-            window.utils.tampilkanNotifikasi("New password and confirmation do not match!", 'error');
-            saveChangesBtn.textContent = 'Save Changes';
+            window.utils.tampilkanNotifikasi("Password baru dan konfirmasi tidak cocok!", 'error');
+            saveChangesBtn.textContent = 'Simpan Perubahan';
             saveChangesBtn.disabled = false;
             return;
         }
 
         const payload = { email: userEmail };
-        const usernameChanged = newUsername !== sessionStorage.getItem('userName');
-        if (usernameChanged) payload.newUsername = newUsername;
+        const usernameBerubah = newUsername !== sessionStorage.getItem('userName');
+        if (usernameBerubah) {
+            payload.newUsername = newUsername;
+        }
 
         if (newPassword) {
             const saltString = sessionStorage.getItem('userSalt');
             if (!saltString) {
-                window.utils.tampilkanNotifikasi("Invalid session. Please log in again.", 'error');
+                window.utils.tampilkanNotifikasi("Sesi tidak valid. Silakan login ulang.", 'error');
                 return;
             }
             const salt = new Uint8Array(JSON.parse(saltString));
@@ -115,13 +117,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             payload.newVerificationKey = bufferToBase64(kunciVerifikasi);
         }
 
-        if (!usernameChanged && !newPassword) {
-            window.utils.tampilkanNotifikasi("No changes to save.", 'success');
-            saveChangesBtn.textContent = 'Save Changes';
+        if (!usernameBerubah && !newPassword) {
+            window.utils.tampilkanNotifikasi("Tidak ada perubahan untuk disimpan.", 'sukses');
+            saveChangesBtn.textContent = 'Simpan Perubahan';
             saveChangesBtn.disabled = false;
             return;
         }
-    
+
         try {
             const response = await fetch(`${window.config.API_URL}/profile/update`, {
                 method: 'POST',
@@ -129,28 +131,35 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify(payload)
             });
 
-            const result = await response.json();
-            if (!response.ok) throw new Error(result.message);
+            const hasil = await response.json();
+            if (!response.ok) throw new Error(hasil.message);
 
-            window.utils.tampilkanNotifikasi("Profile updated successfully!");
+            window.utils.tampilkanNotifikasi("Profil berhasil diperbarui!");
 
-            if (usernameChanged) {
+            // ==========================================================
+            // PERBAIKAN UTAMA DI SINI:
+            // 1. Update sessionStorage dengan nama baru jika ada perubahan
+            if (usernameBerubah) {
                 sessionStorage.setItem('userName', newUsername);
             }
-
+            
+            // 2. Jika password diubah, arahkan ke login. Jika tidak, cukup refresh halaman.
             if (newPassword) {
-                alert("Your Master Password has been updated. You will be redirected to log in again.");
+                alert("Master Password Anda telah diubah. Anda akan diarahkan untuk login kembali.");
                 sessionStorage.clear();
                 window.location.href = 'auth.html';
             } else {
+                // 3. REFRESH HALAMAN agar main-layout.js bisa membaca data baru dan memperbarui UI
                 setTimeout(() => window.location.reload(), 1500);
             }
+            // ==========================================================
 
         } catch (error) {
-            window.utils.tampilkanNotifikasi(`Failed to save: ${error.message}`, 'error');
+            window.utils.tampilkanNotifikasi(`Gagal menyimpan: ${error.message}`, 'error');
         } finally {
+            // Hanya aktifkan kembali tombol jika password tidak diubah
             if (!newPassword) {
-                saveChangesBtn.textContent = 'Save Changes';
+                saveChangesBtn.textContent = 'Simpan Perubahan';
                 saveChangesBtn.disabled = false;
             }
         }
