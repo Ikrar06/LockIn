@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageDiv.style.color = '#8B949E';
 
         try {
-            const response = await fetch('http://localhost:5000/vault/remote-wipe', {
+            const response = await fetch(`${window.config.API_URL}/vault/remote-wipe`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, destructionCode })

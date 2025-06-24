@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const encryptedPackage = await enkripsi(encryptionKey, jsonString);
             const encryptedVaultString = JSON.stringify(encryptedPackage);
 
-            const response = await fetch('http://localhost:5000/vault/sync', {
+            const response = await fetch(`${window.config.API_URL}/vault/sync`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: userEmail, encryptedVault: encryptedVaultString })

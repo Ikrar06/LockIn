@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
             window.utils.tampilkanNotifikasi("Uploading photo...", 'success');
-
-            const response = await fetch('http://localhost:5000/profile/upload-photo', {
+            
+            const response = await fetch(`${window.config.API_URL}/profile/upload-photo`, {
                 method: 'POST',
                 body: formData
             });
@@ -121,9 +121,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveChangesBtn.disabled = false;
             return;
         }
-
+    
         try {
-            const response = await fetch('http://localhost:5000/profile/update', {
+            const response = await fetch(`${window.config.API_URL}/profile/update`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
