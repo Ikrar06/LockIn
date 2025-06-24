@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Support - LockIn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #010101, #24396b);
+      color: white;
+    }
+    .sidebar {
+  background: rgba(255, 255, 255, 0.05);  
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(30, 64, 175, 0.3);
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 30px rgba(23, 108, 193, 0.15);
+}
+
+
+
+    .nav-item {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      color: #94a3b8;
+      transition: all 0.2s ease;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+      background-color: #1e293b;
+      color: #fff;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .faq-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+    }
+    .faq-content.show {
+      max-height: 500px;
+      opacity: 1;
+    }
+    .glass-box {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+.glass-box:hover {
+  box-shadow: 0 0 20px rgba(0, 153, 255, 0.3); /* biru menyala */
+  border-color: rgba(0, 153, 255, 0.2);
+  transform: translateY(-4px) scale(1.02);
+}
+
+    .rotate {
+      transition: transform 0.3s ease;
+    }
+    .rotate-180 {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex">
+  <aside class="sidebar w-64 p-6 hidden md:flex flex-col justify-between rounded-3xl ml-4 mt-4 mb-5">
+    <div>
+      <div class="flex items-center space-x-2 mb-6">
+        <div class="w-4 h-4 rounded bg-blue-500"></div>
+        <h1 class="text-white text-xl font-bold">Lock<span class="text-blue-400">In</span></h1>
+      </div>
+      <p class="text-white text-sm mb-6 uppercase font-bold tracking-widest">HI, GANTENG!</p>
+      <nav class="space-y-2">
+        <a href="dashboard.html" class="nav-item block flex items-center space-x-2">
+          <i class="fas fa-chart-pie"></i><span>dashboard</span>
+        </a>
+        <a href="password-bank.html" class="nav-item block flex items-center space-x-2">
+          <i class="fas fa-key"></i><span>password bank</span>
+        </a>
+        <a href="password-generator.html" class="nav-item block flex items-center space-x-2">
+          <i class="fas fa-random"></i><span>password generator</span>
+        </a>
+        <a href="support.html" class="nav-item active block flex items-center space-x-2">
+          <i class="fas fa-question-circle"></i><span>Pusat Bantuan</span>
+        </a>
+      </nav>
+    </div>
+    <div class="mt-6">
+      <button class="w-full text-sm bg-gray-800 hover:bg-gray-700 text-white py-2 px-3 rounded flex items-center justify-center space-x-2">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </button>
+      <div class="flex items-center space-x-2 mt-4">
+        <div class="w-8 h-8 rounded-full bg-slate-600"></div>
+        <div class="text-xs text-white">ikrar@gmail.com</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-6 space-y-12">
+    <section class="glass-box rounded-2xl p-8 shadow-lg fade-in">
+      <h2 class="text-3xl font-bold mb-2">Pusat Bantuan</h2>
+      <p class="text-slate-200 mb-4 max-w-xl">Temukan jawaban umum dan panduan untuk menjaga akun dan data Anda tetap aman.</p>
+      <div class="relative max-w-md">
+        <input type="text" placeholder="Cari pertanyaan..." class="w-full bg-[#0f172a] text-white px-4 py-2 rounded-lg pr-10 border border-slate-600 focus:outline-none text-sm">
+        <i class="fas fa-search absolute right-3 top-2.5 text-slate-400"></i>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
+        <a href="#" class="glass-box p-6 rounded-xl shadow-lg fade-in hover:scale-105 transition-transform">
+          <i class="fas fa-shield-alt text-2xl text-white mb-3"></i>
+          <h3 class="font-semibold text-lg mb-2">Keamanan Akun</h3>
+          <p class="text-slate-200 text-sm">Tips untuk melindungi akun dan kata sandi Anda.</p>
+        </a>
+        <a href="#" class="glass-box p-6 rounded-xl shadow-lg fade-in hover:scale-105 transition-transform">
+          <i class="fas fa-user-cog text-2xl text-white mb-3"></i>
+          <h3 class="font-semibold text-lg mb-2">Manajemen Akun</h3>
+          <p class="text-slate-200 text-sm">Ubah email, nama pengguna, dan lainnya.</p>
+        </a>
+        <a href="#" class="glass-box p-6 rounded-xl shadow-lg fade-in hover:scale-105 transition-transform">
+          <i class="fas fa-tools text-2xl text-white mb-3"></i>
+          <h3 class="font-semibold text-lg mb-2">Pemecahan Masalah</h3>
+          <p class="text-slate-200 text-sm">Solusi saat fitur tidak berfungsi.</p>
+        </a>
+        <a href="#" class="glass-box p-6 rounded-xl shadow-lg fade-in hover:scale-105 transition-transform">
+          <i class="fas fa-download text-2xl text-white mb-3"></i>
+          <h3 class="font-semibold text-lg mb-2">Ekspor & Impor</h3>
+          <p class="text-slate-200 text-sm">Backup & restore data Anda dengan aman.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <div class="col-span-2 space-y-4">
+        <h3 class="text-2xl font-bold">Pertanyaan Umum</h3>
+        <div class="space-y-4">
+          <div class="glass-box rounded-lg p-4">
+            <button class="w-full text-left font-semibold flex justify-between items-center toggle-faq">
+              <span>Bagaimana cara mengganti kata sandi akun saya?</span>
+              <i class="fas fa-chevron-down rotate toggle-icon"></i>
+            </button>
+            <div class="faq-content mt-2 text-sm text-slate-300">Masuk ke akun Anda, buka Pengaturan > Keamanan > Ganti Kata Sandi.</div>
+          </div>
+          <div class="glass-box rounded-lg p-4">
+            <button class="w-full text-left font-semibold flex justify-between items-center toggle-faq">
+              <span>Apa yang harus saya lakukan jika lupa kata sandi?</span>
+              <i class="fas fa-chevron-down rotate toggle-icon"></i>
+            </button>
+            <div class="faq-content mt-2 text-sm text-slate-300">Gunakan fitur "Lupa Kata Sandi" pada halaman login untuk reset.</div>
+          </div>
+          <div class="glass-box rounded-lg p-4">
+            <button class="w-full text-left font-semibold flex justify-between items-center toggle-faq">
+              <span>Bagaimana mengimpor data dari perangkat lain?</span>
+              <i class="fas fa-chevron-down rotate toggle-icon"></i>
+            </button>
+            <div class="faq-content mt-2 text-sm text-slate-300">Gunakan fitur impor di menu utama dan unggah file JSON Anda.</div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-box p-5 rounded-xl fade-in mt-12">
+        <h3 class="text-xl font-bold mb-2">Kenapa Penting Menjaga Keamanan Akun?</h3>
+        <p class="text-sm text-slate-200 leading-relaxed">
+          Menjaga keamanan akun berarti melindungi semua informasi pribadi, kredensial login, dan data penting Anda dari akses yang tidak sah. Gunakan kata sandi kuat, aktifkan autentikasi dua faktor, dan jangan bagikan informasi sensitif kepada siapa pun.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.fade-in').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 100);
+      });
+
+      document.querySelectorAll('.toggle-faq').forEach(button => {
+        button.addEventListener('click', () => {
+          const content = button.nextElementSibling;
+          const icon = button.querySelector('.toggle-icon');
+          content.classList.toggle('show');
+          icon.classList.toggle('rotate-180');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
