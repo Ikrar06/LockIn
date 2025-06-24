@@ -18,14 +18,8 @@
     gap: 15px;
     margin-bottom: 40px;
 }
-.logo-box {
-    width: 40px;
-    height: 40px;
-    background-color: #0D69E1;
-    border-radius: 10px;
-}
 .logo-area h3 {
-    font-size: 28px;
+    font-size: 36px;
     font-weight: 600;
     margin: 0;
 }
@@ -315,7 +309,11 @@
   padding: 40px 30px;
   position: relative;
 }
-
+.logo-sidebar{
+  margin-top: 10px;
+  margin-left: -5px;
+  max-height: 40px;
+}
 /* Ikon tengah atas */
 .custom-icon-alert {
   max-width: 120px;

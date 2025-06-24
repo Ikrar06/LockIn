@@ -77,15 +77,14 @@ body::before {
     z-index: -1; /* Posisikan di belakang konten */
 }
 
-/* Background Blur Shapes */
 .shape {
     position: absolute;
     border-radius: 50%;
-    filter: blur(200px);
+    filter: blur(150px);
     z-index: -1;
 }
 .shape1 { width: 600px; height: 600px; background: #256EDB; top: -30%; left: -15%; }
-.shape2 { width: 800px; height: 1000px; background: #256EDB; bottom: -35%; right: -20%; }
+.shape2 { width: 1000px; height: 1000px; background: #256EDB; bottom: -35%; right: -20%; }
 
 
 /* Page Layout */

@@ -117,7 +117,7 @@ window.utils.tampilkanInfoModal = function(options = {}) {
  * @param {object} options - Optional settings: title, yes button text/class
  * @returns {Promise<boolean>} true if user confirmed
  */
-window.utils.tampilkanConfirmModal = function(message, options = {}) {
+window.utils.tampilkanConfirmModal = function(pesan, options = {}) {
     const {
         judul = 'Confirm Action',
         tombolYa = 'Yes',
@@ -130,28 +130,26 @@ window.utils.tampilkanConfirmModal = function(message, options = {}) {
         const confirmTitle = document.getElementById('confirmTitle');
         const yesBtn = document.getElementById('confirm-yes-btn');
         const noBtn = document.getElementById('confirm-no-btn');
-        const noBtn2 = document.getElementById('confirm-no-btn2');
 
-        if (!confirmModal || !confirmMessage || !confirmTitle || !yesBtn || !noBtn || !noBtn2) {
-            console.error("Confirmation modal elements not found!");
-            resolve(window.confirm(message));
+        if (!confirmModal) {
+            console.error("Elemen #confirmModal tidak ditemukan!");
+            resolve(window.confirm(pesan)); // Fallback jika modal tidak ada
             return;
         }
 
         confirmTitle.innerHTML = `${judul}`;
-        confirmMessage.textContent = message;
+        confirmMessage.textContent = pesan;
         yesBtn.textContent = tombolYa;
 
-        yesBtn.classList.remove('btn-primary', 'btn-danger');
+        yesBtn.classList.remove('btn-danger', 'btn-primary');
         yesBtn.classList.add(kelasTombolYa);
-
+        
         confirmModal.classList.add('show');
 
         const handleResolve = (value) => {
             confirmModal.classList.remove('show');
             yesBtn.removeEventListener('click', onYes);
             noBtn.removeEventListener('click', onNo);
-            noBtn2.removeEventListener('click', onNo);
             resolve(value);
         };
 
@@ -160,7 +158,6 @@ window.utils.tampilkanConfirmModal = function(message, options = {}) {
 
         yesBtn.addEventListener('click', onYes, { once: true });
         noBtn.addEventListener('click', onNo, { once: true });
-        noBtn2.addEventListener('click', onNo, { once: true });
     });
 }
 
@@ -243,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (confirmed) {
                     sessionStorage.clear();
-                    window.location.href = 'auth.html';
+                    window.location.href = 'index.html';
                 }
             });
         }

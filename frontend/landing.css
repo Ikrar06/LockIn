@@ -116,8 +116,32 @@ header, main, footer {
     animation: pulse 5s infinite ease-in-out;
 }
 .navbar { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-size: 24px; font-weight: 700; text-decoration: none; color: #fff; }
-.logo .text-biru { color: var(--primary-blue); }
+.logo-area {
+    display: flex; /* KUNCI UTAMA: Jadikan ini flex container */
+    align-items: center; /* Sejajarkan logo dan teks secara vertikal */
+    gap: 12px; /* Jarak antara logo dan teks */
+    padding-left: 5px; /* Sedikit geser ke kanan agar tidak terlalu mepet */
+}
+.logo-area .logo-img {
+    max-height: 40px; 
+}
+.logo-area .logo-box {
+    width: 40px;
+    height: 40px;
+    background-color: 003CFF;
+    border-radius: 10px;
+    flex-shrink: 0; /* Mencegah logo menyusut */
+}
+.logo-area h3 {
+    font-size: 26px; /* Sedikit disesuaikan agar proporsional */
+    font-weight: 700;
+    margin: 0;
+    color: #fff;
+    line-height: 1; /* Pastikan tinggi baris pas */
+}
+.logo-area .text-biru {
+    color: var(--primary-blue, #2979ff); /* Gunakan variabel jika ada */
+}
 .nav-menu { list-style: none; display: flex; gap: 40px; }
 .nav-menu a {
     color: var(--text-muted); text-decoration: none;
@@ -529,4 +553,22 @@ section {
     font-weight: 600;
     text-decoration: none;
     text-align: center;
+}
+/* Scrollbar */
+body::-webkit-scrollbar {
+    width: 8px;
+}
+body::-webkit-scrollbar {
+    display: none;                  /* Webkit */
+}
+body:-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+body:-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+body:-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
