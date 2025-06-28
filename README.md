@@ -1,4 +1,4 @@
-# KeamananDigital
+# LockIn - Digital Security Project
 
 ![image](https://github.com/user-attachments/assets/d3f3ae16-8104-4971-ba5c-a802c3bdef72)
 
