@@ -21,7 +21,7 @@ if (!admin.apps.length) {
             credential: admin.credential.cert(firebaseConfig),
             storageBucket: "gs://lockin-4691a.firebasestorage.app"
         });
-        console.log('Firebase initialized successfully');
+        console.log('Firebase initialized successfully in GetSalt');
     } catch (error) {
         console.error("KRITIS: Gagal memuat konfigurasi Firebase.", error);
     }
@@ -71,8 +71,8 @@ module.exports = async function handler(req, res) {
             return res.status(400).json({ message: 'Format email tidak valid' });
         }
 
-        console.log('Looking up user in database...');
-        // Cek user di database
+        console.log('Looking up user in database with Admin SDK...');
+        // Cek user di database menggunakan Firebase Admin (bypass rules)
         const userDoc = await usersCollection.doc(decodedEmail).get();
 
         if (!userDoc.exists) {
