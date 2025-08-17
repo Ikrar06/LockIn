@@ -4,15 +4,38 @@ const admin = require('firebase-admin');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 
-// --- Inisialisasi Firebase Admin (Tidak Berubah) ---
+// --- Inisialisasi Firebase Admin ---
 try {
-    const serviceAccount = require('./firebase-secret-key.json');
+    // Untuk Vercel, gunakan environment variables untuk Firebase config
+    const firebaseConfig = {
+        type: process.env.FIREBASE_TYPE,
+        project_id: process.env.FIREBASE_PROJECT_ID,
+        private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+        private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        client_email: process.env.FIREBASE_CLIENT_EMAIL,
+        client_id: process.env.FIREBASE_CLIENT_ID,
+        auth_uri: process.env.FIREBASE_AUTH_URI,
+        token_uri: process.env.FIREBASE_TOKEN_URI,
+        auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
+        client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
+        universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
+    };
+
+    // Fallback ke file lokal jika environment variables tidak ada (untuk development)
+    let serviceAccount;
+    if (process.env.FIREBASE_PRIVATE_KEY) {
+        serviceAccount = firebaseConfig;
+    } else {
+        serviceAccount = require('./firebase-secret-key.json');
+    }
+
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      storageBucket: "gs://lockin-4691a.firebasestorage.app" // GANTI DENGAN STORAGE BUCKET ANDA
+        credential: admin.credential.cert(serviceAccount),
+        storageBucket: "gs://lockin-4691a.firebasestorage.app"
     });
+    console.log('Firebase initialized successfully');
 } catch (error) {
-    console.error("KRITIS: Gagal memuat file kunci Firebase.", error);
+    console.error("KRITIS: Gagal memuat konfigurasi Firebase.", error);
     process.exit(1);
 }
 
@@ -25,32 +48,35 @@ const logsCollection = db.collection('activity_logs');
 
 // --- Setup Express & Multer ---
 const app = express();
-const PORT = 5000;
-const upload = multer({ storage: multer.memoryStorage() }); // Simpan file di memori sementara
+const PORT = process.env.PORT || 5000;
+const upload = multer({ storage: multer.memoryStorage() });
 
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:5502', 'http://127.0.0.1:5502', 'https://your-vercel-app.vercel.app'],
+    credentials: true
+}));
 app.use(express.json());
 app.set('trust proxy', 1);
 
-// --- 4. Fungsi Pencatatan Log (Accounting) ---
+// --- Fungsi Pencatatan Log ---
 async function catatLog(aksi, detail = {}) {
-  try {
-    await logsCollection.add({
-      action: aksi,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      ...detail
-    });
-    console.log(`LOG DIBUAT: Aksi '${aksi}'`);
-  } catch (error) {
-    console.error("KRITIS: Gagal mencatat log ke Firestore!", error);
-  }
+    try {
+        await logsCollection.add({
+            action: aksi,
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            ...detail
+        });
+        console.log(`LOG DIBUAT: Aksi '${aksi}'`);
+    } catch (error) {
+        console.error("KRITIS: Gagal mencatat log ke Firestore!", error);
+    }
 }
 
 // ======================================================================
-// ENDPOINT API
+// ENDPOINT API - Semua dengan prefix /api
 // ======================================================================
 
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     const { email, username, salt, verificationKey, destructionCode } = req.body;
     if (!email || !username || !salt || !verificationKey || !destructionCode) {
         return res.status(400).json({ message: 'Registrasi gagal: Semua data harus diisi.' });
@@ -66,7 +92,6 @@ app.post('/register', async (req, res) => {
         const verificationHash = await bcrypt.hash(keyBuffer, 10);
         const destructionHash = await bcrypt.hash(destructionCode, 10);
 
-        // Simpan data profil ke collection 'users'
         await userRef.set({
             username: username,
             salt: salt,
@@ -75,7 +100,6 @@ app.post('/register', async (req, res) => {
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
 
-        // Buat brankas kosong untuk pengguna baru di collection 'brankas'
         await brankasCollection.doc(email).set({
             encrypted_vault: '',
             lastUpdated: admin.firestore.FieldValue.serverTimestamp()
@@ -88,12 +112,12 @@ app.post('/register', async (req, res) => {
         });
         res.status(201).json({ message: 'Akun berhasil dibuat!', email: email });
     } catch (error) {
-        console.error("Error di /register:", error);
+        console.error("Error di /api/register:", error);
         res.status(500).json({ message: 'Terjadi kesalahan pada server.' });
     }
 });
 
-app.get('/getsalt/:email', async (req, res) => {
+app.get('/api/getsalt/:email', async (req, res) => {
     try {
         const doc = await usersCollection.doc(req.params.email).get();
         if (!doc.exists) {
@@ -105,7 +129,7 @@ app.get('/getsalt/:email', async (req, res) => {
     }
 });
 
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { email, verificationKey } = req.body;
     if (!email || !verificationKey) {
         return res.status(400).json({ message: 'Login gagal: Data tidak lengkap.' });
@@ -128,34 +152,26 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Email atau Master Password salah.' });
         }
 
-        // Ambil brankas secara terpisah
         const brankasDoc = await brankasCollection.doc(email).get();
         
-        // Buat objek balasan yang bersih
         const responsePayload = {
             message: 'Login berhasil',
             username: userData.username,
             encryptedVault: brankasDoc.exists ? brankasDoc.data().encrypted_vault : ''
         };
 
-        // Catat log SEBELUM mengirim balasan
         await catatLog('LOGIN_SUCCESS', { userEmail: email, ipAddress: req.ip });
         
-        // Kirim balasan yang sudah bersih
         console.log(`Pengguna berhasil login: ${email}. Mengirim data brankas.`);
         return res.status(200).json(responsePayload);
 
     } catch (error) {
-        console.error("========================================");
-        console.error("!!!   ERROR KRITIS DI ENDPOINT LOGIN   !!!");
-        console.error("========================================");
-        console.error(error);
+        console.error("ERROR KRITIS DI ENDPOINT LOGIN:", error);
         return res.status(500).json({ message: 'Terjadi kesalahan internal pada server.' });
     }
 });
 
-app.post('/vault/sync', async (req, res) => {
-    // Di aplikasi nyata, 'email' harus didapat dari sesi/token yang terverifikasi
+app.post('/api/vault/sync', async (req, res) => {
     const { email, encryptedVault } = req.body;
     if (!email || encryptedVault === undefined) {
         return res.status(400).json({ message: 'Sinkronisasi gagal: Data tidak lengkap.' });
@@ -171,11 +187,12 @@ app.post('/vault/sync', async (req, res) => {
         await catatLog('VAULT_UPDATE', { userEmail: email, ipAddress: req.ip });
         res.status(200).json({ message: 'Brankas berhasil disimpan ke cloud.' });
     } catch (error) {
-        console.error("Error di /vault/sync:", error);
+        console.error("Error di /api/vault/sync:", error);
         res.status(500).json({ message: 'Terjadi kesalahan pada server.' });
     }
 });
-app.get('/vault/:email', async (req, res) => {
+
+app.get('/api/vault/:email', async (req, res) => {
     try {
         const { email } = req.params;
         const doc = await brankasCollection.doc(email).get();
@@ -184,12 +201,12 @@ app.get('/vault/:email', async (req, res) => {
         }
         res.status(200).json({ encryptedVault: doc.data().encrypted_vault });
     } catch (error) {
-        console.error("Error di GET /vault/:email", error);
+        console.error("Error di GET /api/vault/:email", error);
         res.status(500).json({ message: "Terjadi kesalahan server." });
     }
 });
 
-app.get('/profile/:email', async (req, res) => {
+app.get('/api/profile/:email', async (req, res) => {
     try {
         const { email } = req.params;
         const userDoc = await usersCollection.doc(email).get();
@@ -209,11 +226,12 @@ app.get('/profile/:email', async (req, res) => {
         res.status(200).json(responsePayload);
 
     } catch (error) {
-        console.error("Error di GET /profile/:email:", error);
+        console.error("Error di GET /api/profile/:email:", error);
         res.status(500).json({ message: "Terjadi kesalahan server." });
     }
 });
-app.post('/profile/update', async (req, res) => {
+
+app.post('/api/profile/update', async (req, res) => {
     const { email, newUsername, newVerificationKey } = req.body;
 
     if (!email) {
@@ -230,16 +248,14 @@ app.post('/profile/update', async (req, res) => {
         const dataToUpdate = {};
         let logAction = 'PROFILE_UPDATE';
 
-        // Jika ada username baru, siapkan untuk diupdate
         if (newUsername) {
             dataToUpdate.username = newUsername;
         }
 
-        // Jika ada password baru, siapkan hash baru untuk diupdate
         if (newVerificationKey) {
             const keyBuffer = Buffer.from(newVerificationKey, 'base64');
             dataToUpdate.verification_hash = await bcrypt.hash(keyBuffer, 10);
-            logAction = 'PASSWORD_CHANGE_SUCCESS'; // Aksi log lebih spesifik
+            logAction = 'PASSWORD_CHANGE_SUCCESS';
         }
         
         if (Object.keys(dataToUpdate).length === 0) {
@@ -252,18 +268,17 @@ app.post('/profile/update', async (req, res) => {
         res.status(200).json({ message: 'Profil berhasil diperbarui.', updatedUsername: dataToUpdate.username });
 
     } catch (error) {
-        console.error("Error di /profile/update:", error);
+        console.error("Error di /api/profile/update:", error);
         res.status(500).json({ message: 'Terjadi kesalahan pada server.' });
     }
 });
-app.post('/profile/upload-photo', upload.single('profilePhoto'), async (req, res) => {
-    console.log("Menerima permintaan ke /profile/upload-photo...");
 
-    // Ambil data dari form-data
+app.post('/api/profile/upload-photo', upload.single('profilePhoto'), async (req, res) => {
+    console.log("Menerima permintaan ke /api/profile/upload-photo...");
+
     const { email } = req.body;
     const file = req.file;
 
-    // PENGAMAN 1: Pastikan file dan email ada.
     if (!email || !file) {
         console.error("Upload gagal: email atau file tidak ada.");
         return res.status(400).json({ message: 'Email dan file foto diperlukan.' });
@@ -275,16 +290,14 @@ app.post('/profile/upload-photo', upload.single('profilePhoto'), async (req, res
         const filePath = `profile-pictures/${email}/${Date.now()}_${file.originalname}`;
         const blob = bucket.file(filePath);
         const blobStream = blob.createWriteStream({
-            resumable: false, // Penting untuk buffer
+            resumable: false,
             metadata: {
                 contentType: file.mimetype,
-                // Tambahkan metadata lain jika perlu
             }
         });
 
         blobStream.on('error', (err) => {
             console.error("Error di BlobStream:", err);
-            // Jangan kirim respons lagi jika sudah dikirim
             if (!res.headersSent) {
                 res.status(500).json({ message: 'Gagal mengunggah file ke bucket.' });
             }
@@ -293,18 +306,15 @@ app.post('/profile/upload-photo', upload.single('profilePhoto'), async (req, res
         blobStream.on('finish', async () => {
             console.log("File berhasil diunggah ke Firebase Storage.");
             try {
-                // Buat file bisa diakses publik untuk mendapatkan URL
                 await blob.makePublic();
                 const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
                 console.log(`URL publik file: ${publicUrl}`);
 
-                // Simpan URL ke Firestore
                 await usersCollection.doc(email).update({ profilePhotoUrl: publicUrl });
                 console.log("URL berhasil disimpan ke Firestore.");
 
                 await catatLog('PROFILE_PHOTO_UPDATED', { userEmail: email, ipAddress: req.ip });
                 
-                // Kirim kembali URL baru ke frontend
                 if (!res.headersSent) {
                     res.status(200).json({ message: 'Foto profil berhasil diperbarui', profilePhotoUrl: publicUrl });
                 }
@@ -316,18 +326,17 @@ app.post('/profile/upload-photo', upload.single('profilePhoto'), async (req, res
             }
         });
 
-        // Akhiri stream dengan buffer file dari multer
         blobStream.end(file.buffer);
 
     } catch (error) {
-        console.error("Error utama di /profile/upload-photo:", error);
+        console.error("Error utama di /api/profile/upload-photo:", error);
         if (!res.headersSent) {
             res.status(500).json({ message: 'Terjadi kesalahan tak terduga pada server.' });
         }
     }
-
 });
-app.post('/vault/remote-wipe', async (req, res) => {
+
+app.post('/api/vault/remote-wipe', async (req, res) => {
     const { email, destructionCode } = req.body;
     if (!email || !destructionCode) {
         return res.status(400).json({ message: 'Email dan Kode Penghancur diperlukan.' });
@@ -336,13 +345,10 @@ app.post('/vault/remote-wipe', async (req, res) => {
     try {
         const userDoc = await usersCollection.doc(email).get();
         if (!userDoc.exists) {
-            // Kita sengaja tidak memberitahu jika emailnya salah untuk keamanan
             return res.status(403).json({ message: 'Email atau Kode Penghancur salah.' });
         }
 
         const userData = userDoc.data();
-        
-        // Bandingkan kode yang dimasukkan dengan hash di database
         const isMatch = await bcrypt.compare(destructionCode, userData.destruction_hash);
 
         if (!isMatch) {
@@ -350,7 +356,6 @@ app.post('/vault/remote-wipe', async (req, res) => {
             return res.status(403).json({ message: 'Email atau Kode Penghancur salah.' });
         }
 
-        // --- JIKA KODE BENAR, LAKUKAN PENGHANCURAN ---
         await brankasCollection.doc(email).update({ encrypted_vault: '' });
         
         await catatLog('REMOTE_WIPE_SUCCESS', { userEmail: email, ipAddress: req.ip });
@@ -358,11 +363,22 @@ app.post('/vault/remote-wipe', async (req, res) => {
         res.status(200).json({ message: 'Semua data di dalam brankas Anda telah berhasil dihapus secara permanen.' });
 
     } catch (error) {
-        console.error("Error di /vault/remote-wipe:", error);
+        console.error("Error di /api/vault/remote-wipe:", error);
         res.status(500).json({ message: 'Terjadi kesalahan pada server.' });
     }
 });
-// --- 5. Jalankan Server ---
-app.listen(PORT, () => {
-  console.log(`Server backend berjalan dan mendengarkan di http://localhost:${PORT}`);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ message: 'Server is running', timestamp: new Date().toISOString() });
 });
+
+// For Vercel serverless functions
+if (process.env.VERCEL) {
+    module.exports = app;
+} else {
+    // For local development
+    app.listen(PORT, () => {
+        console.log(`Server backend berjalan dan mendengarkan di http://localhost:${PORT}`);
+    });
+}
