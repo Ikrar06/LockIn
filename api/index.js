@@ -21,22 +21,16 @@ try {
         universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
     };
 
-    // Fallback ke file lokal jika environment variables tidak ada (untuk development)
-    let serviceAccount;
-    if (process.env.FIREBASE_PRIVATE_KEY) {
-        serviceAccount = firebaseConfig;
-    } else {
-        serviceAccount = require('./firebase-secret-key.json');
+    // Initialize Firebase Admin
+    if (!admin.apps.length) {
+        admin.initializeApp({
+            credential: admin.credential.cert(firebaseConfig),
+            storageBucket: "gs://lockin-4691a.firebasestorage.app"
+        });
     }
-
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        storageBucket: "gs://lockin-4691a.firebasestorage.app"
-    });
     console.log('Firebase initialized successfully');
 } catch (error) {
     console.error("KRITIS: Gagal memuat konfigurasi Firebase.", error);
-    process.exit(1);
 }
 
 // Dapatkan akses ke layanan Firebase
@@ -48,15 +42,13 @@ const logsCollection = db.collection('activity_logs');
 
 // --- Setup Express & Multer ---
 const app = express();
-const PORT = process.env.PORT || 5000;
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(cors({
-    origin: ['http://localhost:5502', 'http://127.0.0.1:5502', 'https://lock-in-vert.vercel.app'],
+    origin: '*',
     credentials: true
 }));
 app.use(express.json());
-app.set('trust proxy', 1);
 
 // --- Fungsi Pencatatan Log ---
 async function catatLog(aksi, detail = {}) {
@@ -73,7 +65,7 @@ async function catatLog(aksi, detail = {}) {
 }
 
 // ======================================================================
-// ENDPOINT API - Semua dengan prefix /api
+// ENDPOINT API - Semua dengan prefix /api (akan di-handle oleh Vercel rewrite)
 // ======================================================================
 
 app.post('/api/register', async (req, res) => {
@@ -121,7 +113,7 @@ app.get('/api/getsalt/:email', async (req, res) => {
     try {
         const doc = await usersCollection.doc(req.params.email).get();
         if (!doc.exists) {
-            return res.status(404).json({ message: "Pengguna tidak ditemukan." });
+            return res.status(404).json({ message: "Incorrect email or Master Password." });
         }
         res.status(200).json({ salt: doc.data().salt });
     } catch (error) {
@@ -140,7 +132,7 @@ app.post('/api/login', async (req, res) => {
 
         if (!userDoc.exists) {
             await catatLog('LOGIN_FAIL', { email: email, ipAddress: req.ip, reason: 'User not found' });
-            return res.status(401).json({ message: 'Email atau Master Password salah.' });
+            return res.status(401).json({ message: 'Incorrect email or Master Password.' });
         }
         
         const userData = userDoc.data();
@@ -149,7 +141,7 @@ app.post('/api/login', async (req, res) => {
 
         if (!isMatch) {
             await catatLog('LOGIN_FAIL', { userEmail: email, ipAddress: req.ip, reason: 'Password mismatch' });
-            return res.status(401).json({ message: 'Email atau Master Password salah.' });
+            return res.status(401).json({ message: 'Incorrect email or Master Password.' });
         }
 
         const brankasDoc = await brankasCollection.doc(email).get();
@@ -274,26 +266,19 @@ app.post('/api/profile/update', async (req, res) => {
 });
 
 app.post('/api/profile/upload-photo', upload.single('profilePhoto'), async (req, res) => {
-    console.log("Menerima permintaan ke /api/profile/upload-photo...");
-
     const { email } = req.body;
     const file = req.file;
 
     if (!email || !file) {
-        console.error("Upload gagal: email atau file tidak ada.");
         return res.status(400).json({ message: 'Email dan file foto diperlukan.' });
     }
-
-    console.log(`Menerima file '${file.originalname}' untuk email '${email}'.`);
 
     try {
         const filePath = `profile-pictures/${email}/${Date.now()}_${file.originalname}`;
         const blob = bucket.file(filePath);
         const blobStream = blob.createWriteStream({
             resumable: false,
-            metadata: {
-                contentType: file.mimetype,
-            }
+            metadata: { contentType: file.mimetype }
         });
 
         blobStream.on('error', (err) => {
@@ -304,15 +289,11 @@ app.post('/api/profile/upload-photo', upload.single('profilePhoto'), async (req,
         });
 
         blobStream.on('finish', async () => {
-            console.log("File berhasil diunggah ke Firebase Storage.");
             try {
                 await blob.makePublic();
                 const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-                console.log(`URL publik file: ${publicUrl}`);
 
                 await usersCollection.doc(email).update({ profilePhotoUrl: publicUrl });
-                console.log("URL berhasil disimpan ke Firestore.");
-
                 await catatLog('PROFILE_PHOTO_UPDATED', { userEmail: email, ipAddress: req.ip });
                 
                 if (!res.headersSent) {
@@ -373,12 +354,10 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ message: 'Server is running', timestamp: new Date().toISOString() });
 });
 
-// For Vercel serverless functions
-if (process.env.VERCEL) {
-    module.exports = app;
-} else {
-    // For local development
-    app.listen(PORT, () => {
-        console.log(`Server backend berjalan dan mendengarkan di http://localhost:${PORT}`);
-    });
-}
+// Catch all untuk menangani semua routes
+app.all('*', (req, res) => {
+    res.status(200).json({ message: 'API is running', path: req.path });
+});
+
+// Export untuk Vercel
+module.exports = app;
