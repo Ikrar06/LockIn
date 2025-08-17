@@ -23,7 +23,7 @@ if (!admin.apps.length) {
         });
         console.log('Firebase initialized successfully in GetSalt');
     } catch (error) {
-        console.error("KRITIS: Gagal memuat konfigurasi Firebase.", error);
+        console.error("KRITIS: Gagal memuat konfigurasi Firebase di GetSalt.", error);
     }
 }
 
@@ -71,8 +71,9 @@ module.exports = async function handler(req, res) {
             return res.status(400).json({ message: 'Format email tidak valid' });
         }
 
-        console.log('Looking up user in database with Admin SDK...');
-        // Cek user di database menggunakan Firebase Admin (bypass rules)
+        console.log('Looking up user in database using Firebase Admin...');
+        
+        // Menggunakan Firebase Admin SDK (bukan client SDK)
         const userDoc = await usersCollection.doc(decodedEmail).get();
 
         if (!userDoc.exists) {
