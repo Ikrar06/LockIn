@@ -5,7 +5,6 @@
       "runtime": "nodejs22.x"
     }
   },
-  "outputDirectory": "frontend",
   "routes": [
     {
       "src": "/api/(.*)",
