@@ -5,8 +5,8 @@
   "main": "api/index.js",
   "scripts": {
     "dev": "vercel dev",
-    "build": "echo 'Build completed'",
-    "start": "echo 'Ready for production'"
+    "build": "echo 'Static files ready'",
+    "start": "node api/index.js"
   },
   "keywords": [
     "password-manager",
